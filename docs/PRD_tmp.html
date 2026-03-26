@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>PRD.md</title>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+    
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+html,footer,header{
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Custom MD PDF CSS
+ */
+html,footer,header{
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+
+ }
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+<link rel="stylesheet" href="file:///r%3A/2.Travail/1.Enseignement/Cours/_1.Outils/2.Developpement/1.SCSS/main.css" type="text/css"><link rel="stylesheet" href="file:///d%3A/rdaros/Cours/_1.Outils/2.Developpement/1.SCSS/main.css" type="text/css">
+</head>
+
+<body>
+    <h1 id="prd--realtime-chess-ai-agent-mvp">PRD — Realtime Chess AI Agent (MVP)</h1>
+<h2 id="1-product-overview">1) Product overview</h2>
+<h3 id="product-name-working">Product name (working)</h3>
+<p><strong>BoardSight Chess</strong> (placeholder)</p>
+<h3 id="one-line-description">One-line description</h3>
+<p>A real-time chess companion that uses a phone camera to <strong>recognize a physical board</strong>, <strong>auto-record moves</strong>, run a <strong>digital chess clock</strong>, and generate <strong>post-game analysis</strong>.</p>
+<h3 id="elevator-pitch">Elevator pitch</h3>
+<p>Players set up a phone to view an over-the-board chess game. The app detects the board and pieces, automatically tracks each move into PGN, optionally flags illegal moves, manages time controls, and produces a clean post-game analysis and shareable recap.</p>
+<hr>
+<h2 id="2-goals--success-metrics">2) Goals &amp; success metrics</h2>
+<h3 id="goals-mvp">Goals (MVP)</h3>
+<ol>
+<li>
+<p>Accurately track board state and moves in real-time using a single phone camera.</p>
+</li>
+<li>
+<p>Provide reliable chess clock/timer functionality integrated with move recording.</p>
+</li>
+<li>
+<p>Produce post-game review: move list + engine eval + key moments.</p>
+</li>
+<li>
+<p>Enable easy export/sharing (PGN + summary).</p>
+</li>
+</ol>
+<h3 id="non-goals-mvp">Non-goals (MVP)</h3>
+<ul>
+<li>
+<p>Tournament certification / official arbiter compliance</p>
+</li>
+<li>
+<p>Full live multiplayer remote play</p>
+</li>
+<li>
+<p>VR/AR glasses integration</p>
+</li>
+<li>
+<p>Proprietary hardware device integration</p>
+</li>
+<li>
+<p>Continuous “in-game coaching” beyond basic hints toggle (keep it minimal)</p>
+</li>
+</ul>
+<h3 id="success-metrics-first-90-days-after-launch">Success metrics (first 90 days after launch)</h3>
+<ul>
+<li>
+<p><strong>Activation rate:</strong> % of new users who successfully complete “first scan + record 10 moves”</p>
+</li>
+<li>
+<p><strong>Move tracking accuracy:</strong> % moves correctly detected without manual correction</p>
+</li>
+<li>
+<p><strong>Session completion:</strong> % recorded games that reach post-game summary</p>
+</li>
+<li>
+<p><strong>Share/export usage:</strong> % games exported as PGN or shared</p>
+</li>
+<li>
+<p><strong>Retention:</strong> week-1 retention for users who recorded at least 1 full game</p>
+</li>
+</ul>
+<hr>
+<h2 id="3-target-users--use-cases">3) Target users &amp; use cases</h2>
+<h3 id="primary-users">Primary users</h3>
+<ol>
+<li>
+<p><strong>Casual players</strong> playing OTB at home/campus.</p>
+</li>
+<li>
+<p><strong>Chess club players</strong> who want to record games quickly.</p>
+</li>
+<li>
+<p><strong>Content creators</strong> who want a clean recap and analysis.</p>
+</li>
+</ol>
+<h3 id="mvp-use-cases">MVP use cases</h3>
+<ul>
+<li>
+<p>Record a casual OTB game hands-free.</p>
+</li>
+<li>
+<p>Use the app as a clock and move logger.</p>
+</li>
+<li>
+<p>Review the game afterwards with annotated insights.</p>
+</li>
+<li>
+<p>Export PGN to Lichess/Chess.com/Stockfish/etc.</p>
+</li>
+</ul>
+<hr>
+<h2 id="4-core-user-stories-mvp">4) Core user stories (MVP)</h2>
+<ol>
+<li>
+<p><strong>As a player</strong>, I want the app to scan my physical board and confirm it understands the starting position.</p>
+</li>
+<li>
+<p><strong>As a player</strong>, I want moves automatically recorded as I play.</p>
+</li>
+<li>
+<p><strong>As a player</strong>, I want to correct a move if the app gets it wrong (quickly).</p>
+</li>
+<li>
+<p><strong>As a player</strong>, I want a built-in clock (with increment) so I don’t need separate hardware.</p>
+</li>
+<li>
+<p><strong>As a player</strong>, I want post-game analysis showing mistakes, blunders, and best lines.</p>
+</li>
+<li>
+<p><strong>As a player</strong>, I want to export PGN and share a summary.</p>
+</li>
+</ol>
+<hr>
+<h2 id="5-mvp-feature-scope-what-we-ship">5) MVP feature scope (what we ship)</h2>
+<h2 id="a-board-scanning--calibration-required">A) Board scanning &amp; calibration (Required)</h2>
+<p><strong>Description:</strong> Detect board grid, orientation, and pieces. Establish a stable baseline position.</p>
+<p><strong>Requirements</strong></p>
+<ul>
+<li>
+<p>Camera setup guide: “place phone here” overlay.</p>
+</li>
+<li>
+<p>Board detection: find 8x8 grid; confirm orientation (white at bottom).</p>
+</li>
+<li>
+<p>Piece detection: initial piece placement recognition.</p>
+</li>
+<li>
+<p>Calibration step: user confirms/edits starting position if needed.</p>
+</li>
+<li>
+<p>Lighting guidance prompts (too dark / glare).</p>
+</li>
+</ul>
+<p><strong>Acceptance criteria</strong></p>
+<ul>
+<li>
+<p>User can complete scan + confirmation in under 60 seconds.</p>
+</li>
+<li>
+<p>App produces a valid FEN from scan.</p>
+</li>
+<li>
+<p>If scan confidence &lt; threshold, app requests adjustment.</p>
+</li>
+</ul>
+<hr>
+<h2 id="b-real-time-move-tracking--notation-required">B) Real-time move tracking &amp; notation (Required)</h2>
+<p><strong>Description:</strong> Track board state and convert physical moves into digital moves.</p>
+<p><strong>Requirements</strong></p>
+<ul>
+<li>
+<p>Detect move changes between frames (piece moved from square A to B).</p>
+</li>
+<li>
+<p>Handle captures.</p>
+</li>
+<li>
+<p>Handle castling.</p>
+</li>
+<li>
+<p>Handle en passant (initially via inference + fallback to manual confirm if uncertain).</p>
+</li>
+<li>
+<p>Detect promotion (prompt user if uncertain).</p>
+</li>
+<li>
+<p>Maintain a move list with timestamps.</p>
+</li>
+<li>
+<p>Output PGN at end.</p>
+</li>
+</ul>
+<p><strong>Manual correction tools (MVP-critical)</strong></p>
+<ul>
+<li>
+<p>“Confirm move” when confidence is low (tap highlight squares).</p>
+</li>
+<li>
+<p>“Edit last move” (choose from-to squares).</p>
+</li>
+<li>
+<p>“Takeback/undo” with confirmation.</p>
+</li>
+<li>
+<p>“Pause tracking” toggle.</p>
+</li>
+</ul>
+<p><strong>Acceptance criteria</strong></p>
+<ul>
+<li>
+<p>For a standard game in good lighting, &gt;90% of moves are auto-recorded without manual fix in internal testing conditions (define test protocol).</p>
+</li>
+<li>
+<p>User can correct any move in under 10 seconds.</p>
+</li>
+</ul>
+<hr>
+<h2 id="c-chess-clock--timer-required">C) Chess clock / timer (Required)</h2>
+<p><strong>Description:</strong> Built-in clock synchronized with moves.</p>
+<p><strong>Requirements</strong></p>
+<ul>
+<li>
+<p>Time controls: bullet/blitz/rapid presets + custom (base time + increment).</p>
+</li>
+<li>
+<p>Start/pause/resume.</p>
+</li>
+<li>
+<p>Tap to switch turns (large button).</p>
+</li>
+<li>
+<p>Optional “auto-switch on detected move” (only if reliable; otherwise keep manual).</p>
+</li>
+<li>
+<p>Flag fall indicator.</p>
+</li>
+<li>
+<p>Time-stamped moves.</p>
+</li>
+</ul>
+<p><strong>Acceptance criteria</strong></p>
+<ul>
+<li>
+<p>Clock never desyncs or loses state when screen locks briefly (handle OS backgrounding).</p>
+</li>
+<li>
+<p>When a move is recorded, the move timestamp matches active player time state.</p>
+</li>
+</ul>
+<hr>
+<h2 id="d-post-game-analysis-required">D) Post-game analysis (Required)</h2>
+<p><strong>Description:</strong> After the game, provide analysis using an engine + AI explanations.</p>
+<p><strong>Requirements</strong></p>
+<ul>
+<li>
+<p>Game summary: result (manual input if unknown), number of moves, time control.</p>
+</li>
+<li>
+<p>Engine evaluation per move (basic).</p>
+</li>
+<li>
+<p>Identify key moments: blunders/mistakes/best moves.</p>
+</li>
+<li>
+<p>Provide 3–5 “learning takeaways” in plain language.</p>
+</li>
+<li>
+<p>Show suggested better line for each major mistake (limit depth to keep fast).</p>
+</li>
+<li>
+<p>“Replay mode” with scrubber through moves.</p>
+</li>
+</ul>
+<p><strong>Acceptance criteria</strong></p>
+<ul>
+<li>
+<p>Analysis completes within acceptable time (target: &lt;30 sec on device or via server).</p>
+</li>
+<li>
+<p>Users can tap a mistake and see recommended move + short explanation.</p>
+</li>
+</ul>
+<hr>
+<h2 id="e-export--sharing-required">E) Export &amp; sharing (Required)</h2>
+<p><strong>Description:</strong> Make the output portable and social.</p>
+<p><strong>Requirements</strong></p>
+<ul>
+<li>
+<p>Export PGN (share sheet).</p>
+</li>
+<li>
+<p>Copy PGN to clipboard.</p>
+</li>
+<li>
+<p>Export a simple “game recap” image/card: players, result, key moments.</p>
+</li>
+<li>
+<p>Save games locally; basic game library.</p>
+</li>
+</ul>
+<p><strong>Acceptance criteria</strong></p>
+<ul>
+<li>PGN exports are valid and importable into common chess tools.</li>
+</ul>
+<hr>
+<h2 id="f-modes-mvp">F) Modes (MVP)</h2>
+<p>For MVP, keep it lean:</p>
+<ul>
+<li>
+<p><strong>Referee mode (lightweight):</strong> illegal move <em>warnings</em> when confident (do not be overly strict).</p>
+</li>
+<li>
+<p><strong>Teacher mode (minimal):</strong> optional “hint” button (not constant coaching).</p>
+</li>
+<li>
+<p><strong>Commentator mode (basic):</strong> after-move short narration in review, not constant live talk.</p>
+</li>
+</ul>
+<p>(You can label these in UI as “Assist Level: Off / Light / On” to avoid complexity.)</p>
+<hr>
+<h2 id="6-ux--screens-mvp-flow">6) UX / Screens (MVP flow)</h2>
+<h3 id="screen-1-onboarding">Screen 1: Onboarding</h3>
+<ul>
+<li>
+<p>“What you need”: phone stand recommended, good lighting</p>
+</li>
+<li>
+<p>Permissions: camera, storage</p>
+</li>
+<li>
+<p>Quick demo video (optional)</p>
+</li>
+</ul>
+<h3 id="screen-2-start-game">Screen 2: Start Game</h3>
+<ul>
+<li>
+<p>Choose mode: Record + Clock (default)</p>
+</li>
+<li>
+<p>Time control selection</p>
+</li>
+<li>
+<p>Player names (optional)</p>
+</li>
+<li>
+<p>Color orientation (white at bottom / black at bottom)</p>
+</li>
+</ul>
+<h3 id="screen-3-scan--calibrate">Screen 3: Scan &amp; Calibrate</h3>
+<ul>
+<li>
+<p>Live camera overlay grid</p>
+</li>
+<li>
+<p>Confidence indicators</p>
+</li>
+<li>
+<p>“Confirm position” → shows detected board with editable pieces</p>
+</li>
+</ul>
+<h3 id="screen-4-live-game">Screen 4: Live Game</h3>
+<ul>
+<li>
+<p>Top: evaluation indicator (optional, can be off)</p>
+</li>
+<li>
+<p>Middle: clock + turn switch</p>
+</li>
+<li>
+<p>Bottom: last move + move list</p>
+</li>
+<li>
+<p>Buttons: Pause, Undo, Edit last, End game</p>
+</li>
+</ul>
+<h3 id="screen-5-post-game-review">Screen 5: Post-game Review</h3>
+<ul>
+<li>
+<p>Summary card</p>
+</li>
+<li>
+<p>Move list + eval</p>
+</li>
+<li>
+<p>Key moments</p>
+</li>
+<li>
+<p>Replay board</p>
+</li>
+<li>
+<p>Export / share</p>
+</li>
+</ul>
+<h3 id="screen-6-game-library">Screen 6: Game Library</h3>
+<ul>
+<li>
+<p>Saved games</p>
+</li>
+<li>
+<p>Search by date/opponent/time control</p>
+</li>
+<li>
+<p>Export anytime</p>
+</li>
+</ul>
+<hr>
+<h2 id="7-functional-requirements-detailed">7) Functional requirements (detailed)</h2>
+<h3 id="computer-vision-pipeline-mvp-baseline">Computer vision pipeline (MVP baseline)</h3>
+<ul>
+<li>
+<p>Board detection (grid corners)</p>
+</li>
+<li>
+<p>Square mapping &amp; homography transform</p>
+</li>
+<li>
+<p>Piece classification (or state-difference approach)</p>
+</li>
+<li>
+<p>Temporal smoothing to reduce jitter</p>
+</li>
+<li>
+<p>Confidence scoring for moves</p>
+</li>
+</ul>
+<h3 id="data-formats">Data formats</h3>
+<ul>
+<li>
+<p>Store: FEN snapshots per move (optional), PGN final</p>
+</li>
+<li>
+<p>Game metadata: time control, date, player names, result</p>
+</li>
+</ul>
+<h3 id="offline-vs-online-recommendation">Offline vs online (recommendation)</h3>
+<ul>
+<li>
+<p>MVP can be <strong>hybrid</strong>:</p>
+<ul>
+<li>
+<p>On-device detection &amp; logging</p>
+</li>
+<li>
+<p>Engine analysis either on-device (Stockfish) OR cloud for speed</p>
+</li>
+</ul>
+</li>
+<li>
+<p>If cloud: must support “queue and notify when ready” inside app (no background promises; just in-app status)</p>
+</li>
+</ul>
+<hr>
+<h2 id="8-non-functional-requirements">8) Non-functional requirements</h2>
+<h3 id="performance">Performance</h3>
+<ul>
+<li>
+<p>Live detection must run at usable FPS (target: 15–30 fps depending device).</p>
+</li>
+<li>
+<p>Battery use: provide “low power mode” (lower frame rate).</p>
+</li>
+</ul>
+<h3 id="reliability">Reliability</h3>
+<ul>
+<li>
+<p>Autosave during game.</p>
+</li>
+<li>
+<p>Recoverable session if app closes.</p>
+</li>
+</ul>
+<h3 id="privacy--security">Privacy &amp; security</h3>
+<ul>
+<li>
+<p>Camera feed processed locally by default.</p>
+</li>
+<li>
+<p>If any upload is required (analysis), explicit opt-in and clear notice.</p>
+</li>
+<li>
+<p>No default storage of raw video unless user enables.</p>
+</li>
+</ul>
+<h3 id="accessibility">Accessibility</h3>
+<ul>
+<li>
+<p>Large clock fonts</p>
+</li>
+<li>
+<p>High contrast mode</p>
+</li>
+<li>
+<p>Voice readout (optional later)</p>
+</li>
+</ul>
+<hr>
+<h2 id="9-edge-cases--constraints-mvp-handling">9) Edge cases &amp; constraints (MVP handling)</h2>
+<ul>
+<li>
+<p>Poor lighting/glare → prompt user to adjust</p>
+</li>
+<li>
+<p>Non-standard piece sets → allow calibration and “piece style” selection later</p>
+</li>
+<li>
+<p>Hands occluding board → tolerate short occlusions via smoothing</p>
+</li>
+<li>
+<p>Fast blitz moves → encourage “clock tap” and allow quick edit</p>
+</li>
+<li>
+<p>Promotions, en passant → prompt when uncertain</p>
+</li>
+<li>
+<p>Illegal move detection: warn only when highly confident to avoid false accusations</p>
+</li>
+</ul>
+<hr>
+<h2 id="10-dependencies--build-plan">10) Dependencies &amp; build plan</h2>
+<h3 id="suggested-technical-approach-high-level">Suggested technical approach (high level)</h3>
+<ul>
+<li>
+<p>Mobile: Flutter / React Native / native (your choice)</p>
+</li>
+<li>
+<p>CV: OpenCV + on-device ML model (TensorFlow Lite / CoreML)</p>
+</li>
+<li>
+<p>Engine: Stockfish (on-device) or server-side</p>
+</li>
+<li>
+<p>Sync (later): Bluetooth / WebRTC / local network (not MVP)</p>
+</li>
+</ul>
+<hr>
+<h2 id="11-mvp-milestones">11) MVP milestones</h2>
+<h3 id="m0--prototype">M0 — Prototype</h3>
+<ul>
+<li>Board detection + manual move input + PGN export</li>
+</ul>
+<h3 id="m1--vision-mvp">M1 — Vision MVP</h3>
+<ul>
+<li>Auto move detection (basic) + correction tools</li>
+</ul>
+<h3 id="m2--clock-integration">M2 — Clock integration</h3>
+<ul>
+<li>Time controls + game session stability</li>
+</ul>
+<h3 id="m3--post-game-analysis">M3 — Post-game analysis</h3>
+<ul>
+<li>Engine eval + key moments + replay</li>
+</ul>
+<h3 id="m4--share--polish">M4 — Share &amp; polish</h3>
+<ul>
+<li>Game library + recap card + onboarding</li>
+</ul>
+<hr>
+<h2 id="12-out-of-scope-post-mvp-roadmap">12) Out of scope (Post-MVP roadmap)</h2>
+<ul>
+<li>
+<p>Two-phone live syncing (secondary timer switcher)</p>
+</li>
+<li>
+<p>Remote live play / spectator mode</p>
+</li>
+<li>
+<p>Hardware IoT clock integration</p>
+</li>
+<li>
+<p>AR glasses integration (Meta)</p>
+</li>
+<li>
+<p>VR training environment</p>
+</li>
+<li>
+<p>“Patented” device program</p>
+</li>
+</ul>
+<hr>
+<h2 id="13-qa--testing-plan-mvp">13) QA &amp; testing plan (MVP)</h2>
+<ul>
+<li>
+<p>Test environments:</p>
+<ul>
+<li>
+<p>3 lighting conditions (bright, normal, dim)</p>
+</li>
+<li>
+<p>3 board designs (classic, high-contrast, patterned)</p>
+</li>
+<li>
+<p>2 piece styles</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Game pace:</p>
+<ul>
+<li>slow (10+5), blitz (5+0)</li>
+</ul>
+</li>
+<li>
+<p>Metrics to log:</p>
+<ul>
+<li>
+<p>move confidence distribution</p>
+</li>
+<li>
+<p>number of manual corrections per game</p>
+</li>
+<li>
+<p>time between move and detection</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="14-mvp-deliverables-checklist">14) MVP deliverables checklist</h2>
+<ul>
+<li>
+<p>Onboarding + permissions</p>
+</li>
+<li>
+<p>Scan &amp; calibration</p>
+</li>
+<li>
+<p>Live tracking + move list + correction tools</p>
+</li>
+<li>
+<p>Chess clock with presets + custom</p>
+</li>
+<li>
+<p>Post-game analysis + replay</p>
+</li>
+<li>
+<p>Export PGN + recap share card</p>
+</li>
+<li>
+<p>Game library (local)</p>
+</li>
+</ul>
+<hr>
+
+</body>
+
+</html>
