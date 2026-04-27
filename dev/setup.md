@@ -20,9 +20,66 @@ This guide is the fastest path to run the app on your Android phone with Expo Go
 
 ### Ubuntu server (Coolify host)
 
-- Coolify already installed and reachable
-- DNS/domain ready for backend URL (example: `api.yourdomain.com`)
-- Ports 80/443 open through router/firewall
+- Coolify installed on the machine that will run the stack
+- **Either** a public DNS name that points to your home IP **with** ports 80/443 forwarded **or** (recommended for home) a **Cloudflare Tunnel** so you do **not** need to expose router ports — see **§2.5** below
+- `orchville.com` managed in Cloudflare (for tunnel + DNS)
+
+---
+
+## 2.5 Cloudflare Tunnel — `chessai.orchville.com` → home Linux (Coolify)
+
+Use this when `orchville.com` is on Cloudflare and you want **`https://chessai.orchville.com`** to reach Coolify on your Linux box **without** opening 80/443 on your router.
+
+### A) Create the tunnel (Cloudflare dashboard)
+
+1. Log in to [Cloudflare Dashboard](https://dash.cloudflare.com) → select **orchville.com** if needed.
+2. Go to **Zero Trust** (sometimes **Cloudflare One** in the left nav) → **Networks** → **Tunnels**.
+3. **Create a tunnel** → choose **Cloudflared** → name it (e.g. `home-coolify`) → **Save tunnel**.
+4. **Install and run a connector** on your **Linux home server** using the command Cloudflare shows (uses a **token** — treat it like a secret). Prefer the **Linux** **systemd** service instructions so the tunnel survives reboot.
+
+### B) Public hostname (route subdomain to Coolify)
+
+Still under the tunnel → **Public Hostname** → **Add a public hostname**:
+
+| Field | Example |
+|--------|--------|
+| **Subdomain** | `chessai` |
+| **Domain** | `orchville.com` |
+| **Service type** | `HTTP` (typical) |
+| **URL** | `http://127.0.0.1:80` **or** `http://127.0.0.1:443` — see below |
+
+**Choosing the URL**
+
+- Coolify usually terminates TLS and listens on **80/443** on the host. The tunnel must forward to the **same port** your browser would use **on the server itself** when you open Coolify’s proxy.
+- Start with **`http://127.0.0.1:80`**. If nothing answers, try **`https://127.0.0.1:443`** and enable **“No TLS Verify”** for that origin in the hostname’s **Additional application settings** (only for localhost).
+- After you add the app in Coolify, set the resource **FQDN** to **`chessai.orchville.com`** so the proxy routes by **Host** header. The tunnel only forwards traffic to localhost; Coolify decides which container gets the request.
+
+Cloudflare will create the **DNS** record (usually a **CNAME** to `*.cfargotunnel.com`). Do **not** add a second conflicting `A`/`CNAME` for `chessai` on another origin.
+
+### C) SSL mode (dashboard → orchville.com → SSL/TLS)
+
+For tunneled origins, **Full** or **Full (strict)** is common. Avoid **Flexible** if the origin expects HTTPS.
+
+### D) Coolify + env (use this hostname everywhere)
+
+1. In Coolify, set the application domain to **`https://chessai.orchville.com`** (and issue/attach certs if Coolify manages TLS for that name — often it works behind the tunnel when the public name matches).
+2. Set **`CORS_ALLOWED_ORIGINS`** to include your real origins, e.g.  
+   `https://chessai.orchville.com,https://expo.dev,http://localhost:8081,http://localhost:19006`
+3. In the mobile app `.env`:  
+   **`EXPO_PUBLIC_API_BASE_URL=https://chessai.orchville.com`**
+
+**WebSocket relay:**  
+`wss://chessai.orchville.com/ws/relay/<CODE>?role=host&api_key=...` when `API_AUTH_ENABLED=true`.
+
+### E) Quick checks
+
+```powershell
+curl https://chessai.orchville.com/health
+curl https://chessai.orchville.com/health/ready
+curl https://chessai.orchville.com/openapi.yaml
+```
+
+If these fail, verify **cloudflared** is active on the server, the **public hostname** URL/port matches Coolify, and the Coolify resource domain is **`chessai.orchville.com`**.
 
 ---
 
@@ -33,8 +90,8 @@ This guide is the fastest path to run the app on your Android phone with Expo Go
 1. In Coolify, create a new application from this git repo.
 2. Set the deployment **Git branch** to **`server`** (see `dev/git-branches.md`) if you use the server/app split; otherwise use **`main`**.
 3. Set the app root (or compose location) to `backend/`.
-3. Use `backend/docker-compose.yml` as the deployment definition.
-4. Attach a domain (example: `api.yourdomain.com`) and enable HTTPS.
+4. Use `backend/docker-compose.yml` as the deployment definition.
+5. Attach domain **`chessai.orchville.com`** (matching the tunnel hostname) and enable HTTPS per Coolify’s workflow.
 
 ## 3.2 Set environment variables
 
@@ -46,13 +103,13 @@ Set these in Coolify (adapt values as needed):
 - `ANTHROPIC_API_KEY=` (optional for commentary/takeaways)
 - `API_AUTH_ENABLED=true`
 - `BOARD_API_KEY=<strong-random-key>`
-- `CORS_ALLOWED_ORIGINS=https://expo.dev,http://localhost:8081,http://localhost:19006`
+- `CORS_ALLOWED_ORIGINS=https://chessai.orchville.com,https://expo.dev,http://localhost:8081,http://localhost:19006`
 
 If you are still in quick testing mode and auth gets in the way:
 
 - `API_AUTH_ENABLED=false`
 
-**Cloud relay WebSocket:** When `API_AUTH_ENABLED=true`, clients must pass the same secret as REST. Either append `api_key=<BOARD_API_KEY>` to the WebSocket URL (for example `wss://api.yourdomain.com/ws/relay/ABC123?role=host&api_key=...`) or send header `X-API-Key` on the upgrade; a missing or wrong key closes the socket with code `4003`.
+**Cloud relay WebSocket:** When `API_AUTH_ENABLED=true`, clients must pass the same secret as REST. Either append `api_key=<BOARD_API_KEY>` to the WebSocket URL (for example `wss://chessai.orchville.com/ws/relay/ABC123?role=host&api_key=...`) or send header `X-API-Key` on the upgrade; a missing or wrong key closes the socket with code `4003`.
 
 **Production note:** The relay keeps sessions **in memory** on each API process. Run **one API replica** for a given deployment (or accept that multi-replica setups won’t share rooms until you add shared state).
 
@@ -60,14 +117,14 @@ If you are still in quick testing mode and auth gets in the way:
 
 After deploy completes, test:
 
-- `https://api.yourdomain.com/health` should return status `ok`
-- `https://api.yourdomain.com/health/ready` should be `ready` (or `degraded` if DB/Redis not healthy)
+- `https://chessai.orchville.com/health` should return status `ok`
+- `https://chessai.orchville.com/health/ready` should be `ready` (or `degraded` if DB/Redis not healthy)
 
 PowerShell example:
 
 ```powershell
-curl https://api.yourdomain.com/health
-curl https://api.yourdomain.com/health/ready
+curl https://chessai.orchville.com/health
+curl https://chessai.orchville.com/health/ready
 ```
 
 ---
@@ -87,7 +144,7 @@ npm install
 3. Create/update `.env` in the Expo app with backend values:
 
 ```env
-EXPO_PUBLIC_API_BASE_URL=https://api.yourdomain.com
+EXPO_PUBLIC_API_BASE_URL=https://chessai.orchville.com
 EXPO_PUBLIC_API_KEY=<same BOARD_API_KEY from Coolify>
 ```
 
@@ -127,7 +184,7 @@ $body = @{
   include_llm_takeaways = $false
 } | ConvertTo-Json
 
-curl https://api.yourdomain.com/v1/analysis/jobs `
+curl https://chessai.orchville.com/v1/analysis/jobs `
   -Method POST `
   -Headers $headers `
   -ContentType "application/json" `
