@@ -30,12 +30,50 @@ This guide is the fastest path to run the app on your Android phone with Expo Go
 
 Use this when `orchville.com` is on Cloudflare and you want **`https://chessai.orchville.com`** to reach Coolify on your Linux box **without** opening 80/443 on your router.
 
-### A) Create the tunnel (Cloudflare dashboard)
+### Important: you already have tunnels / other subdomains
 
-1. Log in to [Cloudflare Dashboard](https://dash.cloudflare.com) → select **orchville.com** if needed.
-2. Go to **Zero Trust** (sometimes **Cloudflare One** in the left nav) → **Networks** → **Tunnels**.
-3. **Create a tunnel** → choose **Cloudflared** → name it (e.g. `home-coolify`) → **Save tunnel**.
-4. **Install and run a connector** on your **Linux home server** using the command Cloudflare shows (uses a **token** — treat it like a secret). Prefer the **Linux** **systemd** service instructions so the tunnel survives reboot.
+- **Do not** remove or replace existing **Public hostnames** in Cloudflare for other domains or machines.
+- **Prefer:** open the tunnel whose connector already runs on **this** Coolify host → **Public hostnames** → **Add a public hostname** for `chessai.orchville.com` only.
+- If a different tunnel targets **other PCs**, leave it unchanged. Attach `chessai` only to the tunnel that should hit **this** server (or run a **second** `cloudflared` systemd service with a **different** tunnel token if you intentionally isolate tunnels).
+- **Never** overwrite `/etc/cloudflared/config.yml` on SSH without a timestamped backup.
+
+### A) Dashboard: use existing tunnel when possible
+
+1. Log in to [Cloudflare Dashboard](https://dash.cloudflare.com) → **Zero Trust** → **Networks** → **Tunnels**.
+2. Open the tunnel that terminates on your **Coolify Linux server** (same machine as this guide).
+3. **Public hostnames** → **Add a public hostname** → set `chessai` + `orchville.com` + local service URL (see table in §B).  
+   This adds DNS + routing only; it does **not** delete other hostnames.
+4. **Create a new tunnel** only if no connector should run on this host yet; use a **new** name and **new** systemd service so it does not clash with existing `cloudflared` units.
+
+### A.1) SSH on the server: local config file (only if you use `config.yml`)
+
+I can’t run SSH to your home machine from here; use your own `ssh user@host`. If routes are **dashboard-only (token)**, you usually **do not** edit files — skip to §B.
+
+If you maintain **`/etc/cloudflared/config.yml`**:
+
+```bash
+ssh user@your-coolify-server
+sudo cp -a /etc/cloudflared/config.yml "/etc/cloudflared/config.yml.bak.$(date +%Y%m%d%H%M)"
+sudo nano /etc/cloudflared/config.yml
+```
+
+Add **one** ingress block **before** the final catch‑all (last rule must remain the `http_status:404` rule):
+
+```yaml
+  - hostname: chessai.orchville.com
+    service: http://127.0.0.1:80
+```
+
+Validate and restart **only** the unit for **this** tunnel:
+
+```bash
+sudo cloudflared tunnel --config /etc/cloudflared/config.yml ingress validate
+sudo systemctl restart cloudflared
+# If your unit has another name:
+# systemctl list-units 'cloudflared*'
+```
+
+Do **not** remove other `hostname:` lines or merge two unrelated tunnels into one file unless you know they share the same `tunnel:` UUID.
 
 ### B) Public hostname (route subdomain to Coolify)
 
