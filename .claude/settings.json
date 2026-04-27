@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(''''chess.js'''', d[''''version'''']\\)\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(''''zustand'''', d[''''version'''']\\)\")",
+      "Bash(npx husky:*)",
+      "Bash(\"/d/01code/99Ideas/Chess AI/BoardSight/.husky/pre-commit\")",
+      "Bash(\"/d/01code/99Ideas/Chess AI/BoardSight/android/keystore/.gitignore\":*)",
+      "Bash(\"/d/01code/99Ideas/Chess AI/BoardSight/android/keystore/README.md\":*)",
+      "Bash(ls \"d:/01code/99Ideas/Chess AI/BoardSight/src/domain/stateMachine\"*)",
+      "Bash(npx jest:*)",
+      "Bash(node -e \"const t = 1.2; const s = Math.floor\\(t\\); console.log\\(\\(t - s\\) * 10, Math.floor\\(\\(t - s\\) * 10\\)\\);\")",
+      "Read(//c/Users/derne/.claude/projects/d--01code-99Ideas-Chess-AI/7002f9e8-92bf-4023-831e-94680f018612/subagents/**)",
+      "Bash(do echo:*)",
+      "Bash(python3 -c \":*)",
+      "Bash(\"d:\\\\01code\\\\99Ideas\\\\Chess AI\\\\BoardSight\\\\backend\\\\api\\\\__init__.py\")",
+      "Bash(\"d:\\\\01code\\\\99Ideas\\\\Chess AI\\\\BoardSight\\\\backend\\\\api\\\\routes\\\\__init__.py\")",
+      "Bash(grep -l \"backgroundColor: ''#16213e''\\\\|backgroundColor: ''#1a1a2e''\" src/ui/screens/*.tsx)",
+      "Bash(grep -v \"^[0-9]\\\\{1,2\\\\}:\")",
+      "Bash(grep -n \"StyleSheet.create\\\\|backgroundColor: ''''#\" src/ui/screens/LibraryScreen.tsx)",
+      "Bash(npx tsc:*)"
+    ]
+  }
+}
