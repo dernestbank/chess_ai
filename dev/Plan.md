@@ -14,7 +14,7 @@
 | Check | Result |
 |--------|--------|
 | `backend/` present (FastAPI, worker, compose, pytest) | **Yes** |
-| Full backend test suite | **`59 passed`** (`cd backend && python -m pip install -r requirements.txt && python -m pytest`) |
+| Full backend test suite | **`60 passed`** (`cd backend && python -m pip install -r requirements.txt && python -m pytest`) |
 | `BoardSight/` app (`package.json`, `src/`, Expo) in this repo | **No** — mobile milestones below are **not re-verified** here; confirm in your BoardSight / app project folder |
 | Real device / CV performance | **Not run** from this workspace |
 
@@ -507,7 +507,7 @@ Goal: app boots, navigation works, chess logic runs, DB persists, PGN exports.
 
 ### 15.2 Automated tests
 
-- [x] **Backend (this repository):** FastAPI + worker + queue + relay — **59** pytest tests passing (`backend/`, 2026-04-27)
+- [x] **Backend (this repository):** FastAPI + worker + queue + relay — **60** pytest tests passing (`backend/`, 2026-04-27)
 - [x] Unit: GameCore (10 tests), state machine transitions (18 tests), clock reducer (18 tests) — 44 passing
 - [x] Integration: SQLite repositories — 48 tests (`__tests__/data/repositories.test.ts`)
 - [x] Snapshot: Clock (5), MoveList (2), EvalBar (4), RecapCard (3) — 14 snapshots (`__tests__/ui/components.snapshot.test.tsx`)

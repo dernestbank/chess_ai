@@ -20,6 +20,18 @@ def test_health_returns_ok():
     assert data["status"] == "ok"
     assert "version" in data
     assert data["version"] == "1.0.0"
+    assert "api_auth_enabled" in data
+    assert isinstance(data["api_auth_enabled"], bool)
+    assert "board_api_key_configured" in data
+    assert isinstance(data["board_api_key_configured"], bool)
+
+
+def test_openapi_yaml_served():
+    """GET /openapi.yaml returns the static spec file."""
+    r = client.get("/openapi.yaml")
+    assert r.status_code == 200
+    assert "openapi:" in r.text
+    assert "BoardSight API" in r.text
 
 
 # ---------------------------------------------------------------------------

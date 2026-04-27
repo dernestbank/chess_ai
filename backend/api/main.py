@@ -3,9 +3,12 @@ import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 
+from .auth import is_api_auth_enabled
 from .routes import relay, analysis, commentary
+
+_BACKEND_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 app = FastAPI(title="BoardSight API", version="1.0.0")
 
@@ -27,7 +30,21 @@ app.include_router(commentary.router, prefix="/v1", tags=["commentary"])
 @app.get("/health", tags=["health"])
 async def health() -> dict:
     """Basic liveness check — always returns 200 when the process is up."""
-    return {"status": "ok", "version": "1.0.0"}
+    return {
+        "status": "ok",
+        "version": "1.0.0",
+        "api_auth_enabled": is_api_auth_enabled(),
+        "board_api_key_configured": bool(os.getenv("BOARD_API_KEY", "").strip()),
+    }
+
+
+@app.get("/openapi.yaml", tags=["health"], response_model=None)
+async def openapi_yaml():
+    """Static OpenAPI 3 contract (same as ``backend/openapi.yaml`` in the repo)."""
+    path = os.path.join(_BACKEND_ROOT, "openapi.yaml")
+    if not os.path.isfile(path):
+        return JSONResponse(status_code=404, content={"detail": "OpenAPI file not found"})
+    return FileResponse(path, media_type="application/yaml", filename="openapi.yaml")
 
 
 @app.get("/health/ready", tags=["health"])

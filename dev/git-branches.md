@@ -53,4 +53,4 @@ If `BoardSight/` is its **own** Git repo (nested), either:
 - add it as a proper **git submodule** on branch `app`, or  
 - keep the app in a **separate clone** and only track docs/backend here.
 
-Until that is normalized, treat **`app`** as the branch where mobile-related **commits** (including submodule pointer updates) should land.
+Until that is normalized, treat **`app`** as the branch where mobile-related **commits** (including submodule pointer updates) should land. See **`dev/boardsight-submodule.md`** for clone and `.gitmodules` setup.

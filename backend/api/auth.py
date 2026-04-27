@@ -11,6 +11,11 @@ def _is_enabled() -> bool:
     return os.getenv("API_AUTH_ENABLED", "false").strip().lower() in {"1", "true", "yes", "on"}
 
 
+def is_api_auth_enabled() -> bool:
+    """Public alias for tooling and ``/health`` (same semantics as ``_is_enabled``)."""
+    return _is_enabled()
+
+
 def require_api_key(x_api_key: str | None = Header(default=None)) -> None:
     """Validate X-API-Key when auth is enabled.
 
