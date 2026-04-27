@@ -23,6 +23,24 @@ def test_submit_job_returns_201():
     assert data["status"] == "queued"
 
 
+def test_submit_empty_pgn_returns_422():
+    r = client.post("/v1/analysis/jobs", json={"pgn": "   ", "depth": 5})
+    assert r.status_code == 422
+    assert "empty" in r.json()["detail"].lower()
+
+
+def test_submit_unparseable_pgn_returns_422():
+    r = client.post("/v1/analysis/jobs", json={"pgn": "%%%% not chess %%%%", "depth": 5})
+    assert r.status_code == 422
+
+
+def test_submit_oversized_pgn_returns_422():
+    huge = "x" * 600_000
+    r = client.post("/v1/analysis/jobs", json={"pgn": huge, "depth": 5})
+    assert r.status_code == 422
+    assert "maximum length" in r.json()["detail"].lower()
+
+
 def test_get_job_unknown_returns_404():
     r = client.get("/v1/analysis/jobs/nonexistent-id")
     assert r.status_code == 404

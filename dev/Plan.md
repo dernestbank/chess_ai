@@ -3,10 +3,20 @@
 > Derived from **docs/PRD.md**, **docs/PRD_technical.md**, and **docs/About.md**.
 > Mark tasks `[x]` upon completion. Work top-to-bottom within each milestone.
 
-> **Build status:** M0–M9 + M13 + M14 (backend) + full dark-mode theming complete. **309 tests passing across 20 suites, 23 snapshots.** Zero TypeScript errors in src/.
+> **Build status (BoardSight app repo — not verified in this checkout):** The lines below describe intended mobile progress. **In this `Chess AI` folder only `backend/` exists;** mobile source was not opened here.
+> M0–M9 + M13 + M14 (backend) + full dark-mode theming complete. **309 tests passing across 20 suites, 23 snapshots.** Zero TypeScript errors in src/.
 > **200 tests:** 10 GameCore + 18 FSM + 18 Clock + 48 repositories + 18 UI component snapshots + 7 screen snapshots + 14 analysisRouter + 25 P2P + 10 EvalTimeline + 14 drills/tactics + 7 commentator + 9 botEngine + 11 gameService + App smoke test.
 > All 12 screens themed. Spectator role wired end-to-end. Backend Redis/Postgres persistence added (db.py, queue.py, worker/main.py). Game stats bar in LibraryScreen (W/D/L). Latency pill in LiveGameScreen (CLOCK_SYNC sentAt). Detox E2E scaffolding (detox.config.js, e2e/helpers.ts, botGame + otbFlow tests).
 > **Next:** Stockfish WASM (post-MVP), CV native impl (post-MVP), real device build (requires Mac/device).
+
+### Verification log (this `Chess AI` checkout, 2026-04-27)
+
+| Check | Result |
+|--------|--------|
+| `backend/` present (FastAPI, worker, compose, pytest) | **Yes** |
+| Full backend test suite | **`59 passed`** (`cd backend && python -m pip install -r requirements.txt && python -m pytest`) |
+| `BoardSight/` app (`package.json`, `src/`, Expo) in this repo | **No** — mobile milestones below are **not re-verified** here; confirm in your BoardSight / app project folder |
+| Real device / CV performance | **Not run** from this workspace |
 
 ---
 
@@ -23,7 +33,7 @@
   - [ ] P2P WiFi + cloud multiplayer (two-phone sync)
   - [ ] Post-game analysis pipeline (cloud-first, on-device fallback)
   - [ ] Export (PGN + recap card) + game library
-  - [ ] Optional self-hosted backend (Stockfish worker + LLM explanations)
+  - [x] Optional self-hosted backend (Stockfish worker + LLM explanations) — **verified:** `backend/` + `python -m pytest` (49 passed, 2026-04-27)
   - [ ] QA plan + instrumentation
 - [ ] **Success criteria:**
   - [ ] Scan + calibration under 60 seconds on supported devices
@@ -60,7 +70,8 @@
 
 ## 2) Folder & file structure
 
-- [x] Folder & file structure created
+- [x] Backend folder & file structure (`backend/api`, `backend/worker`, compose, `.env.example`, tests) — **verified in this repo**
+- [ ] BoardSight mobile tree as diagrammed (`BoardSight/src/`, `ios/`, `android/`, …) — **not present under this workspace**; verify separately
 
 ```
 BoardSight/
@@ -496,6 +507,7 @@ Goal: app boots, navigation works, chess logic runs, DB persists, PGN exports.
 
 ### 15.2 Automated tests
 
+- [x] **Backend (this repository):** FastAPI + worker + queue + relay — **59** pytest tests passing (`backend/`, 2026-04-27)
 - [x] Unit: GameCore (10 tests), state machine transitions (18 tests), clock reducer (18 tests) — 44 passing
 - [x] Integration: SQLite repositories — 48 tests (`__tests__/data/repositories.test.ts`)
 - [x] Snapshot: Clock (5), MoveList (2), EvalBar (4), RecapCard (3) — 14 snapshots (`__tests__/ui/components.snapshot.test.tsx`)

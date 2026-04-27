@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: BoardSight API
-  version: 0.1.0
+  version: 1.0.0
   description: >
     BoardSight Chess backend — game analysis, move commentary, and
     real-time multiplayer relay.
@@ -29,7 +29,10 @@ components:
       properties:
         pgn:
           type: string
-          description: PGN string of the game to analyse.
+          maxLength: 500000
+          description: >
+            PGN string of the game to analyse. Server-side validation enforces
+            a maximum of 500,000 characters (see 422 responses).
           example: "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 1-0"
         depth:
           type: integer
@@ -237,11 +240,34 @@ paths:
               schema:
                 $ref: "#/components/schemas/AnalysisJobCreated"
         "422":
-          description: Validation error (missing / malformed fields).
+          description: >
+            Request validation or PGN validation failed. PGN-specific cases
+            (from `api/pgn_validate.py`, `MAX_PGN_CHARS=500_000`):
+
+            - `PGN is empty` — null, empty, or whitespace-only `pgn`.
+            - `PGN exceeds maximum length (500000 characters)` — `pgn` longer than 500,000 characters.
+            - `No chess game found in PGN` — text does not contain a parseable game (e.g. not valid PGN).
+
+            Other 422s may come from the request body schema (e.g. missing `pgn`).
+
+            Response body: `{"detail": "<message>"}`.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorDetail"
+              examples:
+                pgn_empty:
+                  summary: Empty or whitespace-only PGN
+                  value:
+                    detail: "PGN is empty"
+                pgn_oversize:
+                  summary: PGN exceeds 500k characters
+                  value:
+                    detail: "PGN exceeds maximum length (500000 characters)"
+                pgn_unparseable:
+                  summary: No parseable game in PGN
+                  value:
+                    detail: "No chess game found in PGN"
 
   /v1/analysis/jobs/{job_id}:
     get:
@@ -373,12 +399,17 @@ paths:
         | `peer_disconnected` | Other player disconnected |
         | `<any client frame>` | Forwarded verbatim from the peer |
 
+        **API key (optional unless `API_AUTH_ENABLED`):** pass the same value as
+        REST header `X-API-Key` either as query param `api_key` or as the
+        `x-api-key` header on the WebSocket upgrade.
+
         **Close codes**:
 
         | code | reason |
         |------|--------|
         | `4000` | Invalid or missing `role` query param |
         | `4001` | Requested slot (host / guest) already occupied |
+        | `4003` | Invalid or missing API key (when server auth is enabled) |
       tags: [relay]
       parameters:
         - name: code
@@ -395,6 +426,13 @@ paths:
           schema:
             type: string
             enum: [host, guest, spectate]
+        - name: api_key
+          in: query
+          required: false
+          description: >
+            Same as `X-API-Key` for REST; required when `API_AUTH_ENABLED` is set.
+          schema:
+            type: string
       responses:
         "101":
           description: WebSocket handshake accepted — connection upgraded.

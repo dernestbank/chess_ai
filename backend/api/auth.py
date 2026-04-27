@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import os
 
-from fastapi import Header, HTTPException, status
+from fastapi import Header, HTTPException, WebSocket, status
 
 
 def _is_enabled() -> bool:
@@ -32,3 +32,19 @@ def require_api_key(x_api_key: str | None = Header(default=None)) -> None:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or missing API key",
         )
+
+
+def websocket_api_key_authorized(websocket: WebSocket) -> bool:
+    """Return True if the WebSocket may proceed (same key as REST when auth is on).
+
+    Reads ``api_key`` from the query string, or ``X-API-Key`` on the upgrade request.
+    """
+    if not _is_enabled():
+        return True
+
+    expected = os.getenv("BOARD_API_KEY", "").strip()
+    if not expected:
+        return False
+
+    got = websocket.query_params.get("api_key") or websocket.headers.get("x-api-key")
+    return bool(got) and got == expected

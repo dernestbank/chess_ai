@@ -2,6 +2,10 @@
 import pytest
 from fastapi.testclient import TestClient
 
+# Register submodules on `api` so `patch("api.db.…")` / `patch("api.queue.…")` resolve.
+import api.db  # noqa: F401
+import api.queue  # noqa: F401
+
 from api.main import app
 
 

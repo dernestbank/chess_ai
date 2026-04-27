@@ -31,6 +31,8 @@ from typing import Optional
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
+from ..auth import websocket_api_key_authorized
+
 log = logging.getLogger(__name__)
 router = APIRouter()
 
@@ -102,6 +104,10 @@ async def relay_endpoint(websocket: WebSocket, code: str) -> None:
       ?role=host | guest | spectate
     """
     await websocket.accept()
+
+    if not websocket_api_key_authorized(websocket):
+        await websocket.close(code=4003, reason="invalid or missing API key")
+        return
 
     role: str = websocket.query_params.get("role", "")
     if role not in ("host", "guest", "spectate"):

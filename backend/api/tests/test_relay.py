@@ -156,3 +156,20 @@ def test_peer_disconnected_notified():
         time.sleep(0.05)
         msg = host_ws.receive_json()
         assert msg["type"] == "peer_disconnected"
+
+
+def test_relay_accepts_api_key_query_when_auth_enabled(monkeypatch):
+    """With API_AUTH_ENABLED, relay accepts matching api_key query param."""
+    monkeypatch.setenv("API_AUTH_ENABLED", "true")
+    monkeypatch.setenv("BOARD_API_KEY", "relay-secret")
+    url = "/ws/relay/ROOMA1?role=host&api_key=relay-secret"
+    with client.websocket_connect(url) as ws:
+        pass  # connected
+
+
+def test_relay_rejects_missing_api_key_when_auth_enabled(monkeypatch):
+    monkeypatch.setenv("API_AUTH_ENABLED", "true")
+    monkeypatch.setenv("BOARD_API_KEY", "relay-secret")
+    with pytest.raises(Exception):
+        with client.websocket_connect("/ws/relay/ROOMA2?role=host") as ws:
+            ws.receive_json()

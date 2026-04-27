@@ -15,6 +15,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from ..auth import require_api_key
+from ..pgn_validate import validate_pgn_for_analysis
 
 router = APIRouter(dependencies=[Depends(require_api_key)])
 
@@ -142,6 +143,11 @@ async def _run_analysis(job_id: str, req: AnalysisRequest) -> None:
 
 @router.post("/jobs", status_code=201)
 async def submit_job(req: AnalysisRequest, background_tasks: BackgroundTasks) -> AnalysisJob:
+    try:
+        validate_pgn_for_analysis(req.pgn)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
     job_id = str(uuid.uuid4())
 
     # 1. Write initial row to Postgres

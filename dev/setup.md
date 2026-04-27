@@ -31,7 +31,8 @@ This guide is the fastest path to run the app on your Android phone with Expo Go
 ## 3.1 Create resource
 
 1. In Coolify, create a new application from this git repo.
-2. Set the app root (or compose location) to `backend/`.
+2. Set the deployment **Git branch** to **`server`** (see `dev/git-branches.md`) if you use the server/app split; otherwise use **`main`**.
+3. Set the app root (or compose location) to `backend/`.
 3. Use `backend/docker-compose.yml` as the deployment definition.
 4. Attach a domain (example: `api.yourdomain.com`) and enable HTTPS.
 
@@ -50,6 +51,10 @@ Set these in Coolify (adapt values as needed):
 If you are still in quick testing mode and auth gets in the way:
 
 - `API_AUTH_ENABLED=false`
+
+**Cloud relay WebSocket:** When `API_AUTH_ENABLED=true`, clients must pass the same secret as REST. Either append `api_key=<BOARD_API_KEY>` to the WebSocket URL (for example `wss://api.yourdomain.com/ws/relay/ABC123?role=host&api_key=...`) or send header `X-API-Key` on the upgrade; a missing or wrong key closes the socket with code `4003`.
+
+**Production note:** The relay keeps sessions **in memory** on each API process. Run **one API replica** for a given deployment (or accept that multi-replica setups won’t share rooms until you add shared state).
 
 ## 3.3 Deploy and verify
 
