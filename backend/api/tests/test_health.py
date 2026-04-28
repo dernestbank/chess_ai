@@ -9,6 +9,21 @@ client = TestClient(app)
 
 
 # ---------------------------------------------------------------------------
+# GET / — root (proxies / Coolify)
+# ---------------------------------------------------------------------------
+
+def test_root_returns_service_links():
+    """GET / must return 200 with stable keys so browsers and health probes see a live API."""
+    r = client.get("/")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["service"] == "boardsight-api"
+    assert data["version"] == "1.0.0"
+    assert data["health"] == "/health"
+    assert data["docs"] == "/docs"
+
+
+# ---------------------------------------------------------------------------
 # GET /health — liveness
 # ---------------------------------------------------------------------------
 

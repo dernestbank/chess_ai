@@ -135,7 +135,7 @@ If these fail, verify **cloudflared** is active on the server, the **public host
 
 Set these in Coolify (adapt values as needed):
 
-- `DATABASE_URL=postgresql://boardsight:boardsight@postgres:5432/boardsight`
+- `DATABASE_URL=postgresql://boardsight:boardsight@db:5432/boardsight`
 - `REDIS_URL=redis://redis:6379/0`
 - `STOCKFISH_PATH=/usr/games/stockfish`
 - `STOCKFISH_UCI_TIMEOUT_SEC=120` (optional; increase if analysis jobs error with Stockfish **timeout** on a slow CPU)
@@ -163,9 +163,27 @@ After deploy completes, test:
 PowerShell example:
 
 ```powershell
+curl https://chessai.orchville.com/
 curl https://chessai.orchville.com/health
 curl https://chessai.orchville.com/health/ready
+curl https://chessai.orchville.com/openapi.yaml
 ```
+
+## 3.4 Troubleshooting: “No available server” / empty proxy page
+
+That message usually means the **reverse proxy (Coolify, Traefik, or Cloudflare Tunnel)** has **no healthy upstream**, not a string returned by this API.
+
+1. **HTTP service must be the `api` container on port `8000`.** In Docker Compose, the public hostname must target the **`api`** service (not `db`, `redis`, or `worker`). In Coolify, confirm the **published port** / load balancer maps to **8000** inside the stack.
+2. **Health check path:** Prefer **`/health`** or **`/`** (both return HTTP 200 when the API process is alive). Avoid using **`/health/ready`** as the only liveness probe if DB/Redis are still starting — it returns **503** until both are up.
+3. **Tunnel → Coolify:** The Cloudflare Tunnel `service` URL must hit the **same port** Coolify listens on locally (often `http://127.0.0.1:80`). If the app is “unhealthy”, the proxy may return a generic error to the browser.
+4. **Verify from your PC:**
+
+```powershell
+curl -sS https://chessai.orchville.com/
+curl -sS https://chessai.orchville.com/health
+```
+
+A working API returns JSON from **`/`** (links to `/docs`, `/health`) and **`{"status":"ok",...}`** from **`/health`**.
 
 ---
 

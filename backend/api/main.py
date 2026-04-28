@@ -27,6 +27,19 @@ app.include_router(analysis.router, prefix="/v1/analysis", tags=["analysis"])
 app.include_router(commentary.router, prefix="/v1", tags=["commentary"])
 
 
+@app.get("/", tags=["health"])
+async def root() -> dict:
+    """Human and proxy-friendly root — avoids bare 404 on `/`; use for Coolify/HTTP checks."""
+    return {
+        "service": "boardsight-api",
+        "version": "1.0.0",
+        "docs": "/docs",
+        "openapi": "/openapi.yaml",
+        "health": "/health",
+        "health_ready": "/health/ready",
+    }
+
+
 @app.get("/health", tags=["health"])
 async def health() -> dict:
     """Basic liveness check — always returns 200 when the process is up."""

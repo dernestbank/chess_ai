@@ -171,6 +171,37 @@ components:
 # ---------------------------------------------------------------------------
 paths:
 
+  /:
+    get:
+      operationId: root
+      summary: API root
+      description: >
+        Returns links to docs and health endpoints. Useful for quick browser
+        checks and reverse proxies that expect `GET /` to succeed (HTTP 200).
+      tags: [health]
+      responses:
+        "200":
+          description: Service identity and navigation links.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [service, version, health, docs]
+                properties:
+                  service:
+                    type: string
+                    example: boardsight-api
+                  version:
+                    type: string
+                  docs:
+                    type: string
+                  openapi:
+                    type: string
+                  health:
+                    type: string
+                  health_ready:
+                    type: string
+
   /health:
     get:
       operationId: health_check
