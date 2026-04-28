@@ -1,6 +1,6 @@
-"""Multi-provider LLM backends (Anthropic, OpenAI-compatible, Gemini).
+"""Multi-provider LLM backends (Anthropic, OpenAI-compatible, Gemini, Ollama).
 
-OpenAI-compatible covers OpenAI and OpenRouter (``LLM_BASE_URL`` + Bearer key).
+OpenAI-compatible covers OpenAI, OpenRouter, and **Ollama** (local ``/v1`` API).
 
 Consumer ChatGPT web login / OAuth is **not** supported for headless servers;
 use an API key (OpenAI platform) or a router key (OpenRouter).
@@ -15,12 +15,14 @@ import httpx
 _DEFAULT_MODEL = {
     "anthropic": "claude-3-5-haiku-20241022",
     "openai": "gpt-4o-mini",
-    "openrouter": "openai/gpt-4o-mini",
+    "openrouter": "openrouter/free",
     "gemini": "gemini-2.0-flash",
+    "ollama": "llama3.2",
 }
 
 _DEFAULT_BASE_OPENAI = "https://api.openai.com/v1"
 _DEFAULT_BASE_OPENROUTER = "https://openrouter.ai/api/v1"
+_DEFAULT_BASE_OLLAMA = "http://127.0.0.1:11434/v1"
 
 
 def normalize_provider(raw: str | None) -> str:
@@ -31,7 +33,9 @@ def normalize_provider(raw: str | None) -> str:
         return "openrouter"
     if p in ("google", "google-ai", "generative-ai"):
         return "gemini"
-    if p not in ("anthropic", "openai", "openrouter", "gemini"):
+    if p in ("local-llm", "ollama"):
+        return "ollama"
+    if p not in ("anthropic", "openai", "openrouter", "gemini", "ollama"):
         return "anthropic"
     return p
 
@@ -57,6 +61,8 @@ def resolve_api_key(provider: str, override: str | None) -> str | None:
         )
     if provider == "gemini":
         return os.getenv("GEMINI_API_KEY", "").strip() or None
+    if provider == "ollama":
+        return os.getenv("OLLAMA_API_KEY", "").strip() or None
     return None
 
 
@@ -67,6 +73,12 @@ def default_model(provider: str) -> str:
 
 
 def openai_compatible_base_url(provider: str) -> str:
+    if provider == "ollama":
+        for env in ("OLLAMA_BASE_URL", "LLM_BASE_URL"):
+            v = os.getenv(env, "").strip()
+            if v:
+                return v.rstrip("/")
+        return _DEFAULT_BASE_OLLAMA
     custom = os.getenv("LLM_BASE_URL", "").strip()
     if custom:
         return custom.rstrip("/")
@@ -78,7 +90,7 @@ def openai_compatible_base_url(provider: str) -> str:
 async def complete_user_text(
     *,
     provider: str,
-    api_key: str,
+    api_key: str | None,
     user_text: str,
     max_tokens: int,
 ) -> str:
@@ -87,10 +99,16 @@ async def complete_user_text(
     timeout = float(os.getenv("LLM_HTTP_TIMEOUT_SEC", "90"))
 
     if provider == "anthropic":
-        return await _anthropic_messages(api_key, model, user_text, max_tokens, timeout)
+        if not api_key or not str(api_key).strip():
+            raise ValueError("Anthropic requires a non-empty API key")
+        return await _anthropic_messages(
+            str(api_key).strip(), model, user_text, max_tokens, timeout
+        )
     if provider in ("openai", "openrouter"):
+        if not api_key or not str(api_key).strip():
+            raise ValueError(f"{provider} requires a non-empty API key")
         return await _openai_chat_completions(
-            api_key=api_key,
+            bearer_token=str(api_key).strip(),
             base_url=openai_compatible_base_url(provider),
             model=model,
             user_text=user_text,
@@ -98,8 +116,25 @@ async def complete_user_text(
             timeout=timeout,
             extra_headers=_openrouter_meta_headers() if provider == "openrouter" else None,
         )
+    if provider == "ollama":
+        tok = (str(api_key).strip() if api_key else "") or None
+        if tok is None and os.getenv("LLM_API_KEY", "").strip():
+            tok = os.getenv("LLM_API_KEY", "").strip()
+        if tok is None and os.getenv("OLLAMA_API_KEY", "").strip():
+            tok = os.getenv("OLLAMA_API_KEY", "").strip()
+        return await _openai_chat_completions(
+            bearer_token=tok,
+            base_url=openai_compatible_base_url("ollama"),
+            model=model,
+            user_text=user_text,
+            max_tokens=max_tokens,
+            timeout=timeout,
+            extra_headers=None,
+        )
     if provider == "gemini":
-        return await _gemini_generate(api_key, model, user_text, max_tokens, timeout)
+        if not api_key or not str(api_key).strip():
+            raise ValueError("Gemini requires a non-empty API key")
+        return await _gemini_generate(str(api_key).strip(), model, user_text, max_tokens, timeout)
 
     raise ValueError(f"Unknown LLM provider: {provider}")
 
@@ -118,7 +153,7 @@ def _openrouter_meta_headers() -> dict[str, str]:
 
 async def _openai_chat_completions(
     *,
-    api_key: str,
+    bearer_token: str | None,
     base_url: str,
     model: str,
     user_text: str,
@@ -127,10 +162,9 @@ async def _openai_chat_completions(
     extra_headers: dict[str, str] | None,
 ) -> str:
     url = f"{base_url.rstrip('/')}/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-    }
+    headers: dict[str, str] = {"Content-Type": "application/json"}
+    if bearer_token:
+        headers["Authorization"] = f"Bearer {bearer_token}"
     if extra_headers:
         headers.update(extra_headers)
     body: dict[str, Any] = {

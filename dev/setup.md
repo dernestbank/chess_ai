@@ -140,7 +140,7 @@ Set these in Coolify (adapt values as needed):
 - `STOCKFISH_PATH=/usr/games/stockfish`
 - `STOCKFISH_UCI_TIMEOUT_SEC=120` (optional; increase if analysis jobs error with Stockfish **timeout** on a slow CPU)
 - `ANTHROPIC_API_KEY=` / `OPENAI_API_KEY=` / `OPENROUTER_API_KEY=` / `GEMINI_API_KEY=` (optional; commentary + takeaways — see `LLM_PROVIDER` in `backend/.env.example`)
-- `LLM_PROVIDER=anthropic` (or `openai`, `openrouter`, `gemini`) — optional `LLM_MODEL`, `LLM_BASE_URL` (OpenRouter default base is automatic)
+- `LLM_PROVIDER=anthropic` (or `openai`, `openrouter`, `gemini`, **`ollama`**) — optional `LLM_MODEL`, `LLM_BASE_URL`; for **Ollama** use `OLLAMA_BASE_URL` when the API runs on the host (e.g. `http://host.docker.internal:11434/v1` from Docker)
 - `API_AUTH_ENABLED=true`
 - `BOARD_API_KEY=<strong-random-key>`
 - `CORS_ALLOWED_ORIGINS=https://chessai.orchville.com,https://expo.dev,http://localhost:8081,http://localhost:19006`

@@ -1,7 +1,7 @@
 """
 LLM worker — move commentary and game takeaways.
 
-Provider is selected with ``LLM_PROVIDER`` (anthropic, openai, openrouter, gemini).
+Provider is selected with ``LLM_PROVIDER`` (anthropic, openai, openrouter, gemini, ollama).
 Uses API keys on the server; consumer ChatGPT OAuth / browser sessions are not supported.
 """
 from __future__ import annotations
@@ -36,7 +36,7 @@ async def comment_on_move(fen: str, move: str, api_key: str | None = None) -> st
     """Return a one-sentence natural language comment on the move."""
     prov = _provider()
     key = resolve_api_key(prov, api_key)
-    if not key:
+    if not key and prov != "ollama":
         return _canned(fen)
 
     user_text = (
@@ -62,7 +62,7 @@ async def generate_takeaways(analysis: dict[str, Any], api_key: str | None = Non
     """Return 3 bullet-point takeaways from a completed game analysis."""
     prov = _provider()
     key = resolve_api_key(prov, api_key)
-    if not key:
+    if not key and prov != "ollama":
         return CANNED_TAKEAWAYS
 
     summary = analysis.get("summary", {})
