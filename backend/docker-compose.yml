@@ -8,6 +8,7 @@ services:
     environment:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - STOCKFISH_PATH=/usr/games/stockfish
+      - STOCKFISH_UCI_TIMEOUT_SEC=${STOCKFISH_UCI_TIMEOUT_SEC:-120}
       - DATABASE_URL=postgresql://boardsight:boardsight@db:5432/boardsight
       - REDIS_URL=redis://redis:6379/0
     depends_on:
@@ -44,6 +45,7 @@ services:
     environment:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - STOCKFISH_PATH=/usr/games/stockfish
+      - STOCKFISH_UCI_TIMEOUT_SEC=${STOCKFISH_UCI_TIMEOUT_SEC:-120}
       - DATABASE_URL=postgresql://boardsight:boardsight@db:5432/boardsight
       - REDIS_URL=redis://redis:6379/0
     depends_on:

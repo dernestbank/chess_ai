@@ -138,6 +138,7 @@ Set these in Coolify (adapt values as needed):
 - `DATABASE_URL=postgresql://boardsight:boardsight@postgres:5432/boardsight`
 - `REDIS_URL=redis://redis:6379/0`
 - `STOCKFISH_PATH=/usr/games/stockfish`
+- `STOCKFISH_UCI_TIMEOUT_SEC=120` (optional; increase if analysis jobs error with Stockfish **timeout** on a slow CPU)
 - `ANTHROPIC_API_KEY=` (optional for commentary/takeaways)
 - `API_AUTH_ENABLED=true`
 - `BOARD_API_KEY=<strong-random-key>`

@@ -16,6 +16,14 @@ def _stockfish_bin() -> str:
     return os.environ.get("STOCKFISH_PATH", "stockfish")
 
 
+def _uci_timeout_sec() -> int:
+    raw = os.environ.get("STOCKFISH_UCI_TIMEOUT_SEC", "120")
+    try:
+        return max(5, int(raw))
+    except ValueError:
+        return 120
+
+
 def _uci_eval(fen: str, depth: int) -> dict:
     """Run stockfish on one position, return {score_cp, best_move, mate}."""
     sf = _stockfish_bin()
@@ -26,7 +34,7 @@ def _uci_eval(fen: str, depth: int) -> dict:
             input=commands,
             capture_output=True,
             text=True,
-            timeout=30,
+            timeout=_uci_timeout_sec(),
         )
         output = proc.stdout
     except FileNotFoundError:
