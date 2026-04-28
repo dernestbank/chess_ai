@@ -139,7 +139,8 @@ Set these in Coolify (adapt values as needed):
 - `REDIS_URL=redis://redis:6379/0`
 - `STOCKFISH_PATH=/usr/games/stockfish`
 - `STOCKFISH_UCI_TIMEOUT_SEC=120` (optional; increase if analysis jobs error with Stockfish **timeout** on a slow CPU)
-- `ANTHROPIC_API_KEY=` (optional for commentary/takeaways)
+- `ANTHROPIC_API_KEY=` / `OPENAI_API_KEY=` / `OPENROUTER_API_KEY=` / `GEMINI_API_KEY=` (optional; commentary + takeaways — see `LLM_PROVIDER` in `backend/.env.example`)
+- `LLM_PROVIDER=anthropic` (or `openai`, `openrouter`, `gemini`) — optional `LLM_MODEL`, `LLM_BASE_URL` (OpenRouter default base is automatic)
 - `API_AUTH_ENABLED=true`
 - `BOARD_API_KEY=<strong-random-key>`
 - `CORS_ALLOWED_ORIGINS=https://chessai.orchville.com,https://expo.dev,http://localhost:8081,http://localhost:19006`

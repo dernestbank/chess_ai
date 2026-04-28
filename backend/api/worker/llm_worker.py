@@ -1,12 +1,15 @@
 """
-LLM worker — commentary and game takeaways via Anthropic Claude.
+LLM worker — move commentary and game takeaways.
 
-Falls back to canned phrases if API key is missing or call fails.
+Provider is selected with ``LLM_PROVIDER`` (anthropic, openai, openrouter, gemini).
+Uses API keys on the server; consumer ChatGPT OAuth / browser sessions are not supported.
 """
 from __future__ import annotations
 
 import os
 from typing import Any
+
+from .llm_providers import complete_user_text, normalize_provider, resolve_api_key
 
 CANNED_COMMENTS = [
     "An interesting choice.",
@@ -25,43 +28,40 @@ CANNED_TAKEAWAYS = [
 ]
 
 
-def _api_key(override: str | None) -> str | None:
-    return override or os.environ.get("ANTHROPIC_API_KEY")
+def _provider() -> str:
+    return normalize_provider(os.getenv("LLM_PROVIDER"))
 
 
 async def comment_on_move(fen: str, move: str, api_key: str | None = None) -> str:
     """Return a one-sentence natural language comment on the move."""
-    key = _api_key(api_key)
+    prov = _provider()
+    key = resolve_api_key(prov, api_key)
     if not key:
         return _canned(fen)
 
-    try:
-        import anthropic
+    user_text = (
+        f"Chess position (FEN): {fen}\n"
+        f"The move played was: {move}\n"
+        "Give a single concise sentence (≤20 words) commenting on this move "
+        "for a beginner player. No preamble."
+    )
 
-        client = anthropic.AsyncAnthropic(api_key=key)
-        message = await client.messages.create(
-            model="claude-haiku-4-5-20251001",
+    try:
+        text = await complete_user_text(
+            provider=prov,
+            api_key=key,
+            user_text=user_text,
             max_tokens=80,
-            messages=[
-                {
-                    "role": "user",
-                    "content": (
-                        f"Chess position (FEN): {fen}\n"
-                        f"The move played was: {move}\n"
-                        "Give a single concise sentence (≤20 words) commenting on this move "
-                        "for a beginner player. No preamble."
-                    ),
-                }
-            ],
         )
-        return message.content[0].text.strip()
+        return text if text else _canned(fen)
     except Exception:
         return _canned(fen)
 
 
 async def generate_takeaways(analysis: dict[str, Any], api_key: str | None = None) -> list[str]:
     """Return 3 bullet-point takeaways from a completed game analysis."""
-    key = _api_key(api_key)
+    prov = _provider()
+    key = resolve_api_key(prov, api_key)
     if not key:
         return CANNED_TAKEAWAYS
 
@@ -71,25 +71,24 @@ async def generate_takeaways(analysis: dict[str, Any], api_key: str | None = Non
     white_acc = summary.get("white_accuracy", 0)
     black_acc = summary.get("black_accuracy", 0)
 
-    try:
-        import anthropic
+    user_text = (
+        f"Chess game analysis summary:\n"
+        f"White accuracy: {white_acc:.1f}%, Black accuracy: {black_acc:.1f}%\n"
+        f"Blunders: {blunders}, Mistakes: {mistakes}\n\n"
+        "Give exactly 3 concise bullet-point takeaways for the player (≤15 words each). "
+        "Start each with '• '. No other text."
+    )
 
-        client = anthropic.AsyncAnthropic(api_key=key)
-        prompt = (
-            f"Chess game analysis summary:\n"
-            f"White accuracy: {white_acc:.1f}%, Black accuracy: {black_acc:.1f}%\n"
-            f"Blunders: {blunders}, Mistakes: {mistakes}\n\n"
-            "Give exactly 3 concise bullet-point takeaways for the player (≤15 words each). "
-            "Start each with '• '. No other text."
-        )
-        message = await client.messages.create(
-            model="claude-haiku-4-5-20251001",
+    try:
+        text = await complete_user_text(
+            provider=prov,
+            api_key=key,
+            user_text=user_text,
             max_tokens=150,
-            messages=[{"role": "user", "content": prompt}],
         )
         lines = [
             ln.lstrip("•• ").strip()
-            for ln in message.content[0].text.strip().splitlines()
+            for ln in text.strip().splitlines()
             if ln.strip()
         ]
         return lines[:3] if lines else CANNED_TAKEAWAYS
@@ -99,5 +98,6 @@ async def generate_takeaways(analysis: dict[str, Any], api_key: str | None = Non
 
 def _canned(fen: str) -> str:
     import hashlib
+
     idx = int(hashlib.md5(fen.encode()).hexdigest(), 16) % len(CANNED_COMMENTS)
     return CANNED_COMMENTS[idx]

@@ -45,7 +45,11 @@ components:
         api_key:
           type: string
           nullable: true
-          description: Optional OpenAI / Anthropic key forwarded to the LLM worker.
+          description: >
+            Optional API key forwarded to the LLM provider for takeaways (overrides server env).
+            Server-side provider is set with LLM_PROVIDER (anthropic, openai, openrouter, gemini);
+            keys: ANTHROPIC_API_KEY, OPENAI_API_KEY, OPENROUTER_API_KEY, GEMINI_API_KEY, or LLM_API_KEY.
+            ChatGPT consumer OAuth is not supported — use OpenAI API keys or OpenRouter.
 
     AnalysisJobCreated:
       type: object
