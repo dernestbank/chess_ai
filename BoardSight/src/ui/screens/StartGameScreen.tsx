@@ -25,7 +25,7 @@ function makeStyles(t: ColorPalette) {
     },
     pickerHeading: { fontSize: 18, fontWeight: 'bold', color: t.text, marginBottom: 16, textAlign: 'center' },
     startBtn: {
-      backgroundColor: t.accent, borderRadius: 12, padding: 16,
+      backgroundColor: t.accentCta, borderRadius: 12, padding: 16,
       alignItems: 'center', marginTop: 8,
     },
     startBtnText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },

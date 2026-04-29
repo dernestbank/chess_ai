@@ -1,5 +1,6 @@
 import React from 'react';
-import { TouchableOpacity, Text } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './types';
 import { OnboardingScreen } from '../screens/OnboardingScreen';
@@ -16,6 +17,29 @@ import { TacticsScreen } from '../screens/TacticsScreen';
 import { SpectatorScreen } from '../screens/SpectatorScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+
+const headerSettingsStyles = StyleSheet.create({
+  btn: { marginRight: 4, padding: 4 },
+  icon: { fontSize: 22, color: '#ffffff' },
+});
+
+function StartGameHeaderSettings({
+  navigation,
+}: {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'StartGame'>;
+}): React.JSX.Element {
+  return (
+    <TouchableOpacity
+      onPress={() => navigation.navigate('Settings')}
+      style={headerSettingsStyles.btn}
+      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+      accessibilityRole="button"
+      accessibilityLabel="Open settings"
+    >
+      <Text style={headerSettingsStyles.icon}>⚙️</Text>
+    </TouchableOpacity>
+  );
+}
 
 export function RootNavigator(): React.JSX.Element {
   return (
@@ -34,15 +58,9 @@ export function RootNavigator(): React.JSX.Element {
         component={StartGameScreen}
         options={({ navigation }) => ({
           title: 'BoardSight Chess',
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Settings')}
-              style={{ marginRight: 4, padding: 4 }}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            >
-              <Text style={{ fontSize: 22, color: '#ffffff' }}>{'⚙️'}</Text>
-            </TouchableOpacity>
-          ),
+          // react-navigation expects a factory; StartGameHeaderSettings is module-level.
+          // eslint-disable-next-line react/no-unstable-nested-components -- navigator API requires inline factory
+          headerRight: () => <StartGameHeaderSettings navigation={navigation} />,
         })}
       />
       <Stack.Screen name="Scan" component={ScanScreen} options={{ title: 'Scan Board' }} />

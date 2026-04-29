@@ -21,6 +21,8 @@ export interface ColorPalette {
   textMuted: string;    // secondary / caption text
   textFaint: string;    // very faint text (hints)
   accent: string;       // primary action color (blue)
+  /** Full-width / high-emphasis CTAs (e.g. Play, confirm). Distinct from informational `accent`. */
+  accentCta: string;
   accentGreen: string;  // success / positive
   accentRed: string;    // danger / negative
   accentGold: string;   // highlight / chess result
@@ -35,6 +37,7 @@ export const DARK: ColorPalette = {
   textMuted:   '#a0aec0',
   textFaint:   '#718096',
   accent:      '#4299e1',
+  accentCta:   '#6daf48',
   accentGreen: '#48bb78',
   accentRed:   '#fc8181',
   accentGold:  '#fbd38d',
@@ -49,6 +52,7 @@ export const LIGHT: ColorPalette = {
   textMuted:   '#4a5568',
   textFaint:   '#718096',
   accent:      '#3182ce',
+  accentCta:   '#2f855a',
   accentGreen: '#276749',
   accentRed:   '#c53030',
   accentGold:  '#b7791f',

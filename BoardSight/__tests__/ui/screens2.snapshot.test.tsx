@@ -36,6 +36,7 @@ jest.mock('../../src/ui/theme', () => {
     textMuted: '#a0aec0',
     textFaint: '#718096',
     accent: '#4299e1',
+    accentCta: '#6daf48',
     accentGreen: '#48bb78',
     accentRed: '#fc8181',
     accentGold: '#fbd38d',

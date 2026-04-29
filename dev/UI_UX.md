@@ -43,7 +43,7 @@
 ## 4) Visual language (tokens)
 
 - [x] **Theme hook** exists: `useTheme()` / `ColorPalette` in `theme.ts`.
-- [ ] **Optional “Chess.com-like” CTA** — add a dedicated token (e.g. `accentCta` / green) for primary buttons *without* breaking existing `accent` usage — audit screens after adding.
+- [x] **Optional “Chess.com-like” CTA** — add a dedicated token (e.g. `accentCta` / green) for primary buttons *without* breaking existing `accent` usage — audit screens after adding.
 - [ ] **Card radius** standardized (e.g. 12–16) across new dashboard components.
 - [ ] **Section spacing:** consistent vertical rhythm (e.g. 8/16/24).
 
@@ -74,7 +74,7 @@
 ### 7.1 Rapid / time-based games (3, 5, 10, custom) — bot + human
 
 - [x] **Clock presets** exist in domain: [src/domain/gamecore/clock.ts](../BoardSight/src/domain/gamecore/clock.ts) (includes 3+2, 5+0, 10+0, etc.).
-- [ ] **UI presents** clear **3 / 5 / 10 min** (and increment policy per product) + **custom** minutes/seconds in [TimeControlPicker](../BoardSight/src/ui/components/TimeControlPicker.tsx) / start flows.
+- [x] **UI presents** clear **3 / 5 / 10 min** (and increment policy per product) + **custom** minutes/seconds in [TimeControlPicker](../BoardSight/src/ui/components/TimeControlPicker.tsx) / start flows.
 - [ ] **vs Bot** path: from Home + Start flow — time control passed into session.
 - [ ] **vs Person** path: Lobby / P2P / cloud — same time-control picker; show latency/consent UI where needed.
 
