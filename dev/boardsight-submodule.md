@@ -1,31 +1,17 @@
-# BoardSight submodule (`BoardSight/`)
+# BoardSight app (`BoardSight/`)
 
-The parent repo records **`BoardSight/`** as a **git submodule** (mode `160000` in the index). After a fresh clone you may see an empty folder until the submodule is initialized.
+The **BoardSight** React Native app lives in **`BoardSight/`** in this monorepo as **normal tracked files** (not a git submodule). A plain `git clone` includes the app; no `git submodule update` step.
 
-## One-time clone
-
-```powershell
-cd "D:\01code\99Ideas\Chess AI"
-git submodule update --init --recursive
-```
-
-If that fails with *no url found for submodule path ...*, add a **`.gitmodules`** file at the repo root (or run `git submodule add`) with your real mobile app remote, for example:
-
-```ini
-[submodule "BoardSight"]
-	path = BoardSight
-	url = https://github.com/YOUR_ORG/YOUR_BOARDSIGHT_REPO.git
-```
-
-Then:
+## Develop
 
 ```powershell
-git submodule sync
-git submodule update --init --recursive
+cd "D:\01code\99Ideas\Chess AI\BoardSight"
+npm install
+npx expo start
 ```
 
-Work on the app on branch **`app`** (see `dev/git-branches.md`); commit **inside** `BoardSight` for app changes, then in the parent repo commit the **updated submodule pointer**.
+Use branch **`app`** for app-focused PRs if you follow `dev/git-branches.md`; commit app changes in the **parent** repo like any other directory.
 
-## If the app lives only on your disk
+## Backend URL
 
-Point the submodule at your GitHub repo (create one if needed), push `BoardSight`’s `main`, then attach it as above. Until then, backend-only work can stay on branch **`server`** without a working `BoardSight/` checkout.
+Point the app at your API (see `dev/setup.md`): `EXPO_PUBLIC_API_BASE_URL`, Settings **Cloud API endpoint**, and relay **`/ws/relay/...`**.

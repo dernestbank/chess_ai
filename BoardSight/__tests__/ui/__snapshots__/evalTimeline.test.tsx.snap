@@ -1,0 +1,519 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EvalTimeline — additional unit tests 9. empty evals shows "No evaluation data" text (no column buttons) 1`] = `
+<View
+  style={
+    {
+      "alignItems": "center",
+      "height": 64,
+      "justifyContent": "center",
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "color": "#718096",
+        "fontSize": 12,
+      }
+    }
+  >
+    No evaluation data
+  </Text>
+</View>
+`;
+
+exports[`EvalTimeline — additional unit tests 10. RecapCard displays correct white and black accuracy percentages 1`] = `
+<View
+  style={
+    {
+      "backgroundColor": "#0f3460",
+      "borderRadius": 16,
+      "padding": 20,
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "color": "#4299e1",
+        "fontSize": 13,
+        "fontWeight": "bold",
+        "marginBottom": 12,
+        "textAlign": "center",
+      }
+    }
+  >
+    BoardSight Chess
+  </Text>
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+        "marginBottom": 12,
+      }
+    }
+  >
+    <View
+      style={
+        {
+          "alignItems": "center",
+          "flex": 1,
+        }
+      }
+    >
+      <Text
+        style={
+          {
+            "fontSize": 20,
+            "marginBottom": 4,
+          }
+        }
+      >
+        ⬜
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#fff",
+            "fontSize": 14,
+            "fontWeight": "600",
+          }
+        }
+      >
+        White Player
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#48bb78",
+            "fontSize": 12,
+            "marginTop": 2,
+          }
+        }
+      >
+        88
+        %
+      </Text>
+    </View>
+    <Text
+      style={
+        {
+          "color": "#fbd38d",
+          "fontSize": 22,
+          "fontWeight": "bold",
+          "paddingHorizontal": 12,
+        }
+      }
+    >
+      1-0
+    </Text>
+    <View
+      style={
+        {
+          "alignItems": "center",
+          "flex": 1,
+        }
+      }
+    >
+      <Text
+        style={
+          {
+            "fontSize": 20,
+            "marginBottom": 4,
+          }
+        }
+      >
+        ⬛
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#fff",
+            "fontSize": 14,
+            "fontWeight": "600",
+          }
+        }
+      >
+        Black Player
+      </Text>
+      <Text
+        style={
+          {
+            "color": "#48bb78",
+            "fontSize": 12,
+            "marginTop": 2,
+          }
+        }
+      >
+        72
+        %
+      </Text>
+    </View>
+  </View>
+  <Text
+    style={
+      {
+        "color": "#718096",
+        "fontSize": 12,
+        "textAlign": "center",
+      }
+    }
+  >
+    35
+     moves · 
+    2026-04-14
+  </Text>
+</View>
+`;
+
+exports[`EvalTimeline — snapshots 1. empty evals renders "No evaluation data" view 1`] = `
+<View
+  style={
+    {
+      "alignItems": "center",
+      "height": 64,
+      "justifyContent": "center",
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "color": "#718096",
+        "fontSize": 12,
+      }
+    }
+  >
+    No evaluation data
+  </Text>
+</View>
+`;
+
+exports[`EvalTimeline — snapshots 2. white winning position (cp=300) matches snapshot 1`] = `
+<RCTScrollView
+  contentContainerStyle={
+    {
+      "alignItems": "flex-start",
+      "flexDirection": "row",
+      "paddingHorizontal": 4,
+    }
+  }
+  horizontal={true}
+  showsHorizontalScrollIndicator={false}
+  style={
+    {
+      "height": 66,
+    }
+  }
+>
+  <View>
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#4a5568",
+            "height": 1,
+            "position": "absolute",
+            "top": 31,
+          },
+          {
+            "width": 10,
+          },
+        ]
+      }
+    />
+    <View
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        {
+          "backgroundColor": "transparent",
+          "borderRadius": 1,
+          "height": 64,
+          "marginRight": 2,
+          "opacity": 1,
+          "overflow": "hidden",
+          "width": 8,
+        }
+      }
+    >
+      <View
+        style={
+          {
+            "backgroundColor": "transparent",
+            "height": 32,
+            "overflow": "hidden",
+          }
+        }
+      >
+        <View
+          style={
+            [
+              {
+                "borderRadius": 1,
+                "width": 8,
+              },
+              {
+                "backgroundColor": "#e2e8f0",
+              },
+              {
+                "bottom": 0,
+                "height": 12,
+                "position": "absolute",
+              },
+            ]
+          }
+        />
+      </View>
+      <View
+        style={
+          {
+            "backgroundColor": "transparent",
+            "height": 32,
+            "overflow": "hidden",
+          }
+        }
+      />
+    </View>
+  </View>
+</RCTScrollView>
+`;
+
+exports[`EvalTimeline — snapshots 3. black winning position (cp=-200) matches snapshot 1`] = `
+<RCTScrollView
+  contentContainerStyle={
+    {
+      "alignItems": "flex-start",
+      "flexDirection": "row",
+      "paddingHorizontal": 4,
+    }
+  }
+  horizontal={true}
+  showsHorizontalScrollIndicator={false}
+  style={
+    {
+      "height": 66,
+    }
+  }
+>
+  <View>
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#4a5568",
+            "height": 1,
+            "position": "absolute",
+            "top": 31,
+          },
+          {
+            "width": 10,
+          },
+        ]
+      }
+    />
+    <View
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        {
+          "backgroundColor": "transparent",
+          "borderRadius": 1,
+          "height": 64,
+          "marginRight": 2,
+          "opacity": 1,
+          "overflow": "hidden",
+          "width": 8,
+        }
+      }
+    >
+      <View
+        style={
+          {
+            "backgroundColor": "transparent",
+            "height": 32,
+            "overflow": "hidden",
+          }
+        }
+      />
+      <View
+        style={
+          {
+            "backgroundColor": "transparent",
+            "height": 32,
+            "overflow": "hidden",
+          }
+        }
+      >
+        <View
+          style={
+            [
+              {
+                "borderRadius": 1,
+                "width": 8,
+              },
+              {
+                "backgroundColor": "#2d3748",
+              },
+              {
+                "height": 8,
+                "position": "absolute",
+                "top": 0,
+              },
+            ]
+          }
+        />
+      </View>
+    </View>
+  </View>
+</RCTScrollView>
+`;
+
+exports[`EvalTimeline — snapshots 4. equal position (cp=0) matches snapshot 1`] = `
+<RCTScrollView
+  contentContainerStyle={
+    {
+      "alignItems": "flex-start",
+      "flexDirection": "row",
+      "paddingHorizontal": 4,
+    }
+  }
+  horizontal={true}
+  showsHorizontalScrollIndicator={false}
+  style={
+    {
+      "height": 66,
+    }
+  }
+>
+  <View>
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#4a5568",
+            "height": 1,
+            "position": "absolute",
+            "top": 31,
+          },
+          {
+            "width": 10,
+          },
+        ]
+      }
+    />
+    <View
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        {
+          "backgroundColor": "transparent",
+          "borderRadius": 1,
+          "height": 64,
+          "marginRight": 2,
+          "opacity": 1,
+          "overflow": "hidden",
+          "width": 8,
+        }
+      }
+    >
+      <View
+        style={
+          {
+            "backgroundColor": "transparent",
+            "height": 32,
+            "overflow": "hidden",
+          }
+        }
+      />
+      <View
+        style={
+          {
+            "backgroundColor": "transparent",
+            "height": 32,
+            "overflow": "hidden",
+          }
+        }
+      />
+    </View>
+  </View>
+</RCTScrollView>
+`;

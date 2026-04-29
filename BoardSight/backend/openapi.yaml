@@ -1,0 +1,437 @@
+openapi: 3.0.3
+
+info:
+  title: BoardSight Analysis API
+  version: 1.0.0
+  description: >
+    REST API for submitting chess games (PGN) for engine analysis and
+    retrieving per-move evaluations, accuracy scores, and takeaways.
+  contact:
+    name: BoardSight
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+
+security:
+  - ApiKeyAuth: []
+
+tags:
+  - name: analysis
+    description: Job submission and result retrieval
+
+# ---------------------------------------------------------------------------
+# Paths
+# ---------------------------------------------------------------------------
+
+paths:
+
+  /v1/analysis/jobs:
+    post:
+      operationId: submitJob
+      summary: Submit a PGN for analysis
+      description: >
+        Accepts a PGN string, creates an analysis job, pushes it onto the
+        worker queue, and returns the new job ID.  The job transitions through
+        the statuses: queued → processing → done | failed.
+      tags:
+        - analysis
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitJobRequest'
+            example:
+              pgn: |
+                [Event "Casual Game"]
+                [White "Alice"]
+                [Black "Bob"]
+                [Result "1-0"]
+
+                1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 1-0
+      responses:
+        '201':
+          description: Job created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitJobResponse'
+              example:
+                jobId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /v1/analysis/jobs/{jobId}:
+    get:
+      operationId: getJobStatus
+      summary: Poll job status
+      description: Returns the current status of an analysis job.
+      tags:
+        - analysis
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - $ref: '#/components/parameters/JobId'
+      responses:
+        '200':
+          description: Job status retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobStatusResponse'
+              examples:
+                queued:
+                  summary: Job is waiting in the queue
+                  value:
+                    jobId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                    status: queued
+                processing:
+                  summary: Worker is currently analysing the game
+                  value:
+                    jobId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                    status: processing
+                done:
+                  summary: Analysis complete — result is ready
+                  value:
+                    jobId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                    status: done
+                failed:
+                  summary: Analysis failed
+                  value:
+                    jobId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                    status: failed
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /v1/analysis/jobs/{jobId}/result:
+    get:
+      operationId: getJobResult
+      summary: Retrieve analysis result
+      description: >
+        Returns the full analysis payload for a completed job.
+        Returns 404 if the job does not exist, and 409 if the job has not
+        yet reached the "done" status.
+      tags:
+        - analysis
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - $ref: '#/components/parameters/JobId'
+      responses:
+        '200':
+          description: Analysis result payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisResult'
+              example:
+                jobId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                status: done
+                moves:
+                  - moveNumber: 1
+                    san: e4
+                    evalCp: 30
+                    classification: good
+                  - moveNumber: 1
+                    san: e5
+                    evalCp: 15
+                    classification: good
+                  - moveNumber: 2
+                    san: Nf3
+                    evalCp: 40
+                    classification: excellent
+                accuracy:
+                  white: 87
+                  black: 74
+                takeaways:
+                  - "White's opening was solid and principled."
+                  - "Black made a critical error on move 14 that gave up a pawn."
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Job exists but has not finished yet.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                detail: "Job is not done yet (status: processing)"
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+# ---------------------------------------------------------------------------
+# Components
+# ---------------------------------------------------------------------------
+
+components:
+
+  # ---- Security schemes ---------------------------------------------------
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: >
+        API key passed in the `X-API-Key` request header.
+        All endpoints require this header.
+
+  # ---- Reusable parameters ------------------------------------------------
+
+  parameters:
+    JobId:
+      name: jobId
+      in: path
+      required: true
+      description: UUID of the analysis job.
+      schema:
+        type: string
+        format: uuid
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+
+  # ---- Reusable responses -------------------------------------------------
+
+  responses:
+    Unauthorized:
+      description: Missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            detail: "Invalid or missing X-API-Key header."
+
+    NotFound:
+      description: The requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            detail: "Job not found"
+
+    UnprocessableEntity:
+      description: >
+        Request body or path parameter failed validation
+        (FastAPI / Pydantic validation error).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+          example:
+            detail:
+              - loc: ["body", "pgn"]
+                msg: "field required"
+                type: "value_error.missing"
+
+  # ---- Reusable schemas ---------------------------------------------------
+
+  schemas:
+
+    # -- Request bodies -------------------------------------------------------
+
+    SubmitJobRequest:
+      type: object
+      required:
+        - pgn
+      properties:
+        pgn:
+          type: string
+          minLength: 1
+          description: >
+            A complete PGN string for the game to be analysed.
+            Must not be blank.
+          example: "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 *"
+
+    # -- Response bodies ------------------------------------------------------
+
+    SubmitJobResponse:
+      type: object
+      required:
+        - jobId
+      properties:
+        jobId:
+          type: string
+          format: uuid
+          description: Unique identifier for the newly created analysis job.
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+
+    JobStatusResponse:
+      type: object
+      required:
+        - jobId
+        - status
+      properties:
+        jobId:
+          type: string
+          format: uuid
+          description: Unique identifier of the analysis job.
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        status:
+          $ref: '#/components/schemas/JobStatus'
+
+    AnalysisResult:
+      type: object
+      required:
+        - jobId
+        - status
+        - moves
+        - accuracy
+        - takeaways
+      properties:
+        jobId:
+          type: string
+          format: uuid
+          description: Unique identifier of the analysis job.
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        status:
+          type: string
+          enum:
+            - done
+          description: Always "done" for a successfully retrieved result.
+        moves:
+          type: array
+          description: Per-move analysis entries, one object per half-move (ply).
+          items:
+            $ref: '#/components/schemas/MoveAnalysis'
+        accuracy:
+          $ref: '#/components/schemas/AccuracyScores'
+        takeaways:
+          type: array
+          description: Human-readable insights generated from the analysis.
+          items:
+            type: string
+          example:
+            - "White's opening was solid and principled."
+            - "Black made a critical error on move 14 that gave up a pawn."
+
+    MoveAnalysis:
+      type: object
+      required:
+        - moveNumber
+        - san
+        - evalCp
+        - classification
+      properties:
+        moveNumber:
+          type: integer
+          minimum: 1
+          description: >
+            Full-move number (shared by White and Black for the same move pair).
+          example: 1
+        san:
+          type: string
+          description: Move in Standard Algebraic Notation.
+          example: e4
+        evalCp:
+          type: integer
+          description: >
+            Engine evaluation in centipawns after this move is played.
+            Positive values favour White; negative values favour Black.
+          example: 30
+        classification:
+          $ref: '#/components/schemas/MoveClassification'
+
+    AccuracyScores:
+      type: object
+      required:
+        - white
+        - black
+      properties:
+        white:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          description: Overall accuracy percentage for White (0–100).
+          example: 87
+        black:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          description: Overall accuracy percentage for Black (0–100).
+          example: 74
+
+    # -- Enum types -----------------------------------------------------------
+
+    JobStatus:
+      type: string
+      enum:
+        - queued
+        - processing
+        - done
+        - failed
+      description: Lifecycle status of an analysis job.
+      example: queued
+
+    MoveClassification:
+      type: string
+      enum:
+        - excellent
+        - good
+        - inaccuracy
+        - mistake
+        - blunder
+      description: >
+        Engine-assigned quality label for the move, derived from the centipawn
+        loss relative to the best available move.
+      example: good
+
+    # -- Error payloads -------------------------------------------------------
+
+    ErrorResponse:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: string
+          description: Human-readable error message.
+          example: "Job not found"
+
+    ValidationErrorResponse:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: array
+          description: List of field-level validation errors (FastAPI / Pydantic format).
+          items:
+            $ref: '#/components/schemas/ValidationError'
+
+    ValidationError:
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      properties:
+        loc:
+          type: array
+          description: Location of the invalid field (e.g. ["body", "pgn"]).
+          items:
+            type: string
+          example: ["body", "pgn"]
+        msg:
+          type: string
+          description: Human-readable description of the validation failure.
+          example: "field required"
+        type:
+          type: string
+          description: Pydantic error type identifier.
+          example: "value_error.missing"

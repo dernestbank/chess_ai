@@ -9,13 +9,13 @@
 > All 12 screens themed. Spectator role wired end-to-end. Backend Redis/Postgres persistence added (db.py, queue.py, worker/main.py). Game stats bar in LibraryScreen (W/D/L). Latency pill in LiveGameScreen (CLOCK_SYNC sentAt). Detox E2E scaffolding (detox.config.js, e2e/helpers.ts, botGame + otbFlow tests).
 > **Next:** Stockfish WASM (post-MVP), CV native impl (post-MVP), real device build (requires Mac/device).
 
-### Verification log (this `Chess AI` checkout, 2026-04-27)
+### Verification log (this `Chess AI` checkout, 2026-04-29)
 
 | Check | Result |
 |--------|--------|
 | `backend/` present (FastAPI, worker, compose, pytest) | **Yes** |
-| Full backend test suite | **`68 passed`** (`cd backend && python -m pip install -r requirements.txt && python -m pytest`) |
-| `BoardSight/` app (`package.json`, `src/`, Expo) in this repo | **No** — mobile milestones below are **not re-verified** here; confirm in your BoardSight / app project folder |
+| Full backend test suite | **`72 passed`** (`cd backend && python -m pip install -r requirements.txt && python -m pytest`) |
+| `BoardSight/` app (`package.json`, `src/`, Expo) in this repo | **Yes** — vendored in-tree under `BoardSight/` (same clone; no separate submodule URL) |
 | Real device / CV performance | **Not run** from this workspace |
 
 ---
@@ -71,7 +71,7 @@
 ## 2) Folder & file structure
 
 - [x] Backend folder & file structure (`backend/api`, `backend/worker`, compose, `.env.example`, tests) — **verified in this repo**
-- [ ] BoardSight mobile tree as diagrammed (`BoardSight/src/`, `ios/`, `android/`, …) — **not present under this workspace**; verify separately
+- [x] BoardSight mobile tree as diagrammed (`BoardSight/src/`, `ios/`, `android/`, …) — **present** in this monorepo
 
 ```
 BoardSight/
@@ -507,7 +507,7 @@ Goal: app boots, navigation works, chess logic runs, DB persists, PGN exports.
 
 ### 15.2 Automated tests
 
-- [x] **Backend (this repository):** FastAPI + worker + queue + relay — **68** pytest tests passing (`backend/`, 2026-04-27)
+- [x] **Backend (this repository):** FastAPI + worker + queue + relay — **72** pytest tests passing (`backend/`, 2026-04-29)
 - [x] Unit: GameCore (10 tests), state machine transitions (18 tests), clock reducer (18 tests) — 44 passing
 - [x] Integration: SQLite repositories — 48 tests (`__tests__/data/repositories.test.ts`)
 - [x] Snapshot: Clock (5), MoveList (2), EvalBar (4), RecapCard (3) — 14 snapshots (`__tests__/ui/components.snapshot.test.tsx`)

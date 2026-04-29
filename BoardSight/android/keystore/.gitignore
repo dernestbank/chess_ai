@@ -1,0 +1,4 @@
+# Never commit release keystores to version control
+*.jks
+*.keystore
+!debug.keystore
