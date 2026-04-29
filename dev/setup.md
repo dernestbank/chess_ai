@@ -189,17 +189,21 @@ A working API returns JSON from **`/`** (links to `/docs`, `/health`) and **`{"s
 
 ## 4) Run Expo app locally
 
-> Note: this repo snapshot may not currently include the Expo app files.  
-> If your mobile app lives in another folder, run these commands there.
+The app is **`BoardSight/`** in this monorepo.
 
-1. Go to your Expo app directory (the one with `package.json`).
+1. Open the app directory:
+
+```powershell
+cd "D:\01code\99Ideas\Chess AI\BoardSight"
+```
+
 2. Install dependencies:
 
 ```powershell
 npm install
 ```
 
-3. Create/update `.env` in the Expo app with backend values:
+3. Create/update `.env` in **`BoardSight/`** with backend values:
 
 ```env
 EXPO_PUBLIC_API_BASE_URL=https://chessai.orchville.com
