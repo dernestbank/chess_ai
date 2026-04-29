@@ -20,6 +20,7 @@ jest.mock('react-native-vision-camera', () => ({
 // ── Imports ───────────────────────────────────────────────────────────────────
 
 import React from 'react';
+import { Animated } from 'react-native';
 import renderer from 'react-test-renderer';
 
 import { EvalTimeline } from '../../src/ui/components/EvalTimeline';
@@ -38,6 +39,23 @@ async function render(element: React.ReactElement): Promise<renderer.ReactTestRe
 // ── Snapshot tests ─────────────────────────────────────────────────────────────
 
 describe('EvalTimeline — snapshots', () => {
+  beforeEach(() => {
+    jest
+      .spyOn(Animated, 'timing')
+      .mockImplementation(
+        (value, _config) =>
+          ({
+            start: (callback?: (() => void) | undefined) => {
+              value.setValue(1);
+              callback?.();
+            },
+          }) as Animated.CompositeAnimation,
+      );
+  });
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   test('1. empty evals renders "No evaluation data" view', async () => {
     const tree = await render(
       <EvalTimeline evals={[]} replayIndex={0} onSeek={jest.fn()} />,

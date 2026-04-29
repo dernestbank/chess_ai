@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { MoveCandidate } from '../../native/cvModule';
-import { BoardDiagram } from './BoardDiagram';
 import { Square } from '../../domain/gamecore/types';
 
 interface ConfirmMoveSheetProps {

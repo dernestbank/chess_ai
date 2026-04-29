@@ -2,7 +2,7 @@
 // Run with: npx detox test -c ios.sim.release e2e/botGame.test.ts
 
 import { device, element, by, expect as detoxExpect, waitFor } from 'detox';
-import { assertNotVisible, assertVisible, tapElement, waitForElement } from './helpers';
+import { assertVisible, tapElement, waitForElement } from './helpers';
 
 describe('Bot game flow', () => {
   beforeAll(async () => {

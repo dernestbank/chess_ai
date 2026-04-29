@@ -1,6 +1,5 @@
 import { Chess, Move as ChessJsMove } from 'chess.js';
 import { createClock, pauseClock, resumeClock, switchSides, tickClock } from './clock';
-import { movesToPgn } from './pgn';
 import {
   Color,
   GameResult,
@@ -10,10 +9,6 @@ import {
   SessionConfig,
   Square,
 } from './types';
-
-function generateId(): string {
-  return Math.random().toString(36).slice(2) + Date.now().toString(36);
-}
 
 export class GameCore {
   private chess: Chess;

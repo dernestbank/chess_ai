@@ -169,10 +169,25 @@ function treeContains(root: renderer.ReactTestRendererJSON | null, text: string)
 
 describe('crash recovery banner', () => {
   beforeEach(() => {
+    jest
+      .spyOn(Animated, 'timing')
+      .mockImplementation(
+        (value, _config) =>
+          ({
+            start: (callback?: (() => void) | undefined) => {
+              value.setValue(1);
+              callback?.();
+            },
+          }) as Animated.CompositeAnimation,
+      );
     // Reset mocks to a safe default (no active game) before each test.
     mockCheckForActiveGame = jest.fn().mockResolvedValue(null);
     mockLoadGame           = jest.fn().mockResolvedValue(undefined);
     mockEndGame            = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   // ── Core banner-visibility smoke tests (required by Task 2) ────────────────

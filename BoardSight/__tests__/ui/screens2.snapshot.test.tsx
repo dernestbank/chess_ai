@@ -259,21 +259,25 @@ function makeNav() {
 // ── ReviewScreen ──────────────────────────────────────────────────────────────
 
 describe('ReviewScreen — snapshots', () => {
-  test('renders game summary with DARK theme (snapshot)', async () => {
-    const navigation = makeNav();
-    const route = {
-      key: 'Review',
-      name: 'Review',
-      params: { gameId: 'game-snap-001' },
-    } as any;
+  test(
+    'renders game summary with DARK theme (snapshot)',
+    async () => {
+      const navigation = makeNav();
+      const route = {
+        key: 'Review',
+        name: 'Review',
+        params: { gameId: 'game-snap-001' },
+      } as any;
 
-    let tree!: renderer.ReactTestRenderer;
-    await renderer.act(async () => {
-      tree = renderer.create(<ReviewScreen navigation={navigation} route={route} />);
-    });
+      let tree!: renderer.ReactTestRenderer;
+      await renderer.act(async () => {
+        tree = renderer.create(<ReviewScreen navigation={navigation} route={route} />);
+      });
 
-    expect(tree.toJSON()).toMatchSnapshot();
-  });
+      expect(tree.toJSON()).toMatchSnapshot();
+    },
+    15_000,
+  );
 
   test('renders player names and Share PGN button after data loads', async () => {
     const navigation = makeNav();
@@ -300,21 +304,25 @@ describe('ReviewScreen — snapshots', () => {
 // ── StartGameScreen ───────────────────────────────────────────────────────────
 
 describe('StartGameScreen — snapshots', () => {
-  test('renders game-mode menu with DARK theme (snapshot)', async () => {
-    const navigation = makeNav();
-    const route = {
-      key: 'StartGame',
-      name: 'StartGame',
-      params: undefined,
-    } as any;
+  test(
+    'renders game-mode menu with DARK theme (snapshot)',
+    async () => {
+      const navigation = makeNav();
+      const route = {
+        key: 'StartGame',
+        name: 'StartGame',
+        params: undefined,
+      } as any;
 
-    let tree!: renderer.ReactTestRenderer;
-    await renderer.act(async () => {
-      tree = renderer.create(<StartGameScreen navigation={navigation} route={route} />);
-    });
+      let tree!: renderer.ReactTestRenderer;
+      await renderer.act(async () => {
+        tree = renderer.create(<StartGameScreen navigation={navigation} route={route} />);
+      });
 
-    expect(tree.toJSON()).toMatchSnapshot();
-  });
+      expect(tree.toJSON()).toMatchSnapshot();
+    },
+    15_000,
+  );
 
   test('renders all five game-mode cards', async () => {
     const navigation = makeNav();

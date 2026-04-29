@@ -262,11 +262,15 @@ export class P2PManager {
 
     try {
       this._socket?.destroy();
-    } catch (_) {}
+    } catch {
+      /* ignore */
+    }
 
     try {
       this._server?.close();
-    } catch (_) {}
+    } catch {
+      /* ignore */
+    }
 
     this._socket = null;
     this._server = null;

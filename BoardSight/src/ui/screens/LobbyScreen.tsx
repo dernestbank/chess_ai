@@ -147,7 +147,7 @@ export function LobbyScreen({ navigation }: LobbyProps): React.JSX.Element {
     try {
       await p2pManager.joinSession(sessionCode.trim(), callbacks());
       // onConnect callback will fire and navigate
-    } catch (err) {
+    } catch {
       setPhase('idle');
       Alert.alert(
         'Connection failed',

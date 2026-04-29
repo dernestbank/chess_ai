@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, Vibration, View } from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity, Vibration, View } from 'react-native';
 import { BotGameProps } from '../navigation/types';
 import { Clock } from '../components/Clock';
 import { MoveList } from '../components/MoveList';
@@ -72,6 +72,7 @@ export function BotGameScreen({ navigation, route }: BotGameProps): React.JSX.El
     return () => {
       reset();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional mount-only lifecycle
   }, []);
 
   // Watch for turn changes: bot moves + auto-hint when assist is 'on'
@@ -87,6 +88,7 @@ export function BotGameScreen({ navigation, route }: BotGameProps): React.JSX.El
       // Auto-show best move when assist is fully on
       handleHint();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- tied to move list / turn only; expanding deps retriggers bot/hint loops
   }, [gameState?.moves.length]);
 
   const _doBotMove = useCallback(async () => {
@@ -216,6 +218,7 @@ export function BotGameScreen({ navigation, route }: BotGameProps): React.JSX.El
         { text: 'New Game', onPress: () => navigation.replace('StartGame') },
       ]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- alert once when isGameOver flips; full deps re-show alert
   }, [isGameOver]);
 
   return (

@@ -12,9 +12,7 @@ import {
   PieceType,
   SessionConfig,
   Square,
-  TimeControl,
 } from '../gamecore/types';
-import { pauseClock, resumeClock, tickClock } from '../gamecore/clock';
 import {
   createGame,
   deleteLastMove,
@@ -343,7 +341,7 @@ export const useGameService = create<GameServiceState>((set, get) => ({
 /** Tick the clock every 100ms and update Zustand state. */
 function _startTicking() {
   startClockInterval(() => {
-    const { core, gameState, gameId } = useGameService.getState();
+    const { core, gameState } = useGameService.getState();
     if (!core || !gameState?.clock.isRunning) {
       stopClockInterval();
       return;
@@ -362,7 +360,7 @@ function _startTicking() {
 }
 
 /** Listen for app going to background/foreground and pause/resume clock. */
-function _setupAppStateListener(gameId: string) {
+function _setupAppStateListener(_gameId: string) {
   _appStateSubscription?.remove();
   _appStateSubscription = RNAppState.addEventListener(
     'change',

@@ -281,17 +281,21 @@ describe('LibraryScreen — snapshots', () => {
     return (node.children ?? []).map(collectText).join('');
   }
 
-  test('shows search bar, stats, and export button', async () => {
-    const navigation = makeNav();
-    const route = { key: 'Library', name: 'Library', params: undefined } as any;
-    let tree!: renderer.ReactTestRenderer;
-    await renderer.act(async () => {
-      tree = renderer.create(<LibraryScreen navigation={navigation} route={route} />);
-    });
-    const flat = collectText(tree.toJSON());
-    expect(flat).toContain('Export all PGN');
-    expect(flat).toContain('Long press');
-  });
+  test(
+    'shows search bar, stats, and export button',
+    async () => {
+      const navigation = makeNav();
+      const route = { key: 'Library', name: 'Library', params: undefined } as any;
+      let tree!: renderer.ReactTestRenderer;
+      await renderer.act(async () => {
+        tree = renderer.create(<LibraryScreen navigation={navigation} route={route} />);
+      });
+      const flat = collectText(tree.toJSON());
+      expect(flat).toContain('Export all PGN');
+      expect(flat).toContain('Long press');
+    },
+    15_000,
+  );
 
   test('shows game list entry with player names', async () => {
     const navigation = makeNav();

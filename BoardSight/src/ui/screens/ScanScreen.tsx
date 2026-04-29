@@ -58,7 +58,7 @@ const STARTING_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 export function ScanScreen({ navigation, route }: ScanProps): React.JSX.Element {
   const theme = useTheme();
   const styles = makeStyles(theme);
-  const { gameId } = route.params;
+  const { gameId, timeControlName } = route.params;
   const { startNewGame } = useGameService();
   const { dispatch } = useAppStore();
 
@@ -106,6 +106,7 @@ export function ScanScreen({ navigation, route }: ScanProps): React.JSX.Element 
     return () => {
       cvModule.stopSession();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- CV bootstrap once; permission flows via run()
   }, []);
 
   const handleConfirm = useCallback(async () => {
@@ -115,12 +116,15 @@ export function ScanScreen({ navigation, route }: ScanProps): React.JSX.Element 
       cvModule.pauseTracking(true);
       const orientation = boardFlipped ? 'black-bottom' : 'white-bottom';
 
-      // Create game in GameService (uses 'otb' mode with Blitz 5+0 default)
+      const timeControl =
+        TIME_CONTROLS.find(tc => tc.name === timeControlName) ?? TIME_CONTROLS[2];
+
+      // Create game in GameService (uses 'otb' mode; time control from StartGame selection)
       const gId = await startNewGame({
-        id: Math.random().toString(36).slice(2),
+        id: gameId === 'new' ? Math.random().toString(36).slice(2) : gameId,
         mode: 'otb',
         boardOrientation: orientation,
-        timeControl: TIME_CONTROLS[2], // Blitz 5+0
+        timeControl,
         assistLevel: 'off',
       });
 
@@ -129,7 +133,7 @@ export function ScanScreen({ navigation, route }: ScanProps): React.JSX.Element 
     } finally {
       setIsStarting(false);
     }
-  }, [isStarting, boardFlipped, startNewGame, dispatch, navigation]);
+  }, [isStarting, boardFlipped, startNewGame, dispatch, navigation, gameId, timeControlName]);
 
   const confidencePct = Math.round(confidence * 100);
 

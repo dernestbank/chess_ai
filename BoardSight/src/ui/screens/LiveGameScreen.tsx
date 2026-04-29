@@ -92,6 +92,7 @@ export function LiveGameScreen({ navigation, route }: LiveGameProps): React.JSX.
     if (!gameState) {
       loadGame(gameId).catch(console.error);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only re-load when gameId changes
   }, [gameId]);
 
   // ── P2P multiplayer wiring ─────────────────────────────────────────────────
@@ -206,7 +207,7 @@ export function LiveGameScreen({ navigation, route }: LiveGameProps): React.JSX.
     return () => {
       // Don't disconnect on unmount — navigating to Review keeps session live briefly
     };
-  }, [isMultiplayer, isGuest, applyMove, dispatch, gameId, navigation]);
+  }, [isMultiplayer, isGuest, isHost, applyMove, undoMove, syncToFen, dispatch, gameId, navigation]);
 
   // ── CV session (OTB + host in multiplayer) ─────────────────────────────────
   useEffect(() => {
@@ -222,7 +223,7 @@ export function LiveGameScreen({ navigation, route }: LiveGameProps): React.JSX.
         onMoveCandidate: (candidate: MoveCandidate) => {
           if (isPaused) return;
           const receiveTime = Date.now();
-          const latencyMs = receiveTime - candidate.timestamp;
+          const detectLatencyMs = receiveTime - candidate.timestamp;
 
           if (candidate.confidence >= CONFIDENCE_THRESHOLD) {
             const ok = applyMove(candidate.fromSquare as Square, candidate.toSquare as Square, candidate.promotion);
@@ -230,7 +231,7 @@ export function LiveGameScreen({ navigation, route }: LiveGameProps): React.JSX.
               confidence: candidate.confidence,
               autoAccepted: true,
               manuallyCorrect: ok,
-              latencyMs,
+              latencyMs: detectLatencyMs,
             });
 
             if (ok) { Vibration.vibrate(30); } // move confirmation haptic
@@ -255,7 +256,7 @@ export function LiveGameScreen({ navigation, route }: LiveGameProps): React.JSX.
               confidence: candidate.confidence,
               autoAccepted: false,
               manuallyCorrect: false,
-              latencyMs,
+              latencyMs: detectLatencyMs,
             });
             setHighlightFrom(candidate.fromSquare as Square);
             setPendingCandidate(candidate);
@@ -265,6 +266,7 @@ export function LiveGameScreen({ navigation, route }: LiveGameProps): React.JSX.
     );
 
     return () => cvModule.stopSession();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- restart CV session when role/pause/game changes; applyMove/referee captured in callback
   }, [gameState, isPaused, isGuest, isHost]);
 
   const handlePause = () => {
@@ -365,6 +367,7 @@ export function LiveGameScreen({ navigation, route }: LiveGameProps): React.JSX.
         },
       ]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- show game-over dialog once per terminal result
   }, [gameState?.result]);
 
   // Latency pill appearance

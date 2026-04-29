@@ -10,7 +10,6 @@ import {
   setTransportType,
   getTransportType,
   getTransport,
-  type TransportType,
   type MultiplayerTransport,
 } from '../../src/domain/multiplayer/activeTransport';
 import type { P2PCallbacks, P2PMessage, P2PSession } from '../../src/domain/multiplayer/p2p';

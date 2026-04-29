@@ -6,7 +6,6 @@
  */
 import React, { useRef, useState } from 'react';
 import {
-  Animated,
   Dimensions,
   ScrollView,
   StyleSheet,
@@ -169,7 +168,7 @@ export function OnboardingScreen({ navigation }: OnboardingProps): React.JSX.Ele
         showsHorizontalScrollIndicator={false}
         style={styles.scrollView}
       >
-        {SLIDES.map((slide, i) => (
+        {SLIDES.map(slide => (
           <View key={slide.key} style={styles.slide}>
             <Text style={styles.icon}>{slide.icon}</Text>
             <Text style={styles.title}>{slide.title}</Text>

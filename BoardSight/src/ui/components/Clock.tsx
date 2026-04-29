@@ -46,7 +46,7 @@ export function Clock({ side, timeMs, isActive, onTap }: ClockProps): React.JSX.
     } else {
       blink.setValue(1);
     }
-  }, [isActive, isLow]);
+  }, [isActive, isLow, blink]);
 
   const content = (
     <View style={[styles.container, isActive && styles.active, isLow && isActive && styles.lowTime]}>
