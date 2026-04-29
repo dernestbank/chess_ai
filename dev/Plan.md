@@ -3,7 +3,7 @@
 > Derived from **docs/PRD.md**, **docs/PRD_technical.md**, and **docs/About.md**.
 > Mark tasks `[x]` upon completion. Work top-to-bottom within each milestone.
 
-> **Build status (BoardSight app repo — not verified in this checkout):** The lines below describe intended mobile progress. **In this `Chess AI` folder only `backend/` exists;** mobile source was not opened here.
+> **Build status:** **`BoardSight/`** (React Native) and **`backend/`** (FastAPI) both live in this monorepo. Product plan milestones below are marked from earlier builds; re-run Jest and device checks locally after big merges.
 > M0–M9 + M13 + M14 (backend) + full dark-mode theming complete. **309 tests passing across 20 suites, 23 snapshots.** Zero TypeScript errors in src/.
 > **200 tests:** 10 GameCore + 18 FSM + 18 Clock + 48 repositories + 18 UI component snapshots + 7 screen snapshots + 14 analysisRouter + 25 P2P + 10 EvalTimeline + 14 drills/tactics + 7 commentator + 9 botEngine + 11 gameService + App smoke test.
 > All 12 screens themed. Spectator role wired end-to-end. Backend Redis/Postgres persistence added (db.py, queue.py, worker/main.py). Game stats bar in LibraryScreen (W/D/L). Latency pill in LiveGameScreen (CLOCK_SYNC sentAt). Detox E2E scaffolding (detox.config.js, e2e/helpers.ts, botGame + otbFlow tests).
